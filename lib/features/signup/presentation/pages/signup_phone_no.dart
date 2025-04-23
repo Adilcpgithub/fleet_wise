@@ -22,7 +22,10 @@ class SignupPhoneNo extends StatelessWidget {
                 children: [
                   signupPhoneWidgets.topSideImage(),
                   const Spacer(),
-                  signupPhoneWidgets.buildLoginSection(phoneController),
+                  signupPhoneWidgets.buildLoginSection(
+                    phoneController,
+                    context,
+                  ),
                 ],
               ),
             ),

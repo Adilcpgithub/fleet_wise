@@ -2,6 +2,7 @@ import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/core/widgets/custom_textform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignupPhoneWidgets {
   // ! Top side image
@@ -13,7 +14,10 @@ class SignupPhoneWidgets {
   }
 
   //! // ! Main login form section (logo, phone field, terms, button)
-  Widget buildLoginSection(TextEditingController phoneController) {
+  Widget buildLoginSection(
+    TextEditingController phoneController,
+    BuildContext context,
+  ) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -27,7 +31,7 @@ class SignupPhoneWidgets {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Login or register',
+              AppLocalizations.of(context)!.loginTitle,
               style: TextStyle(color: AppColors.grey),
             ),
           ),

@@ -8,42 +8,44 @@ class SignupOtpWidgets {
   Widget buildOtpVerificationHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            'Verify Number',
-            style: TextStyle(
-              color: AppColors.black,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Text(
+                  'Verify number',
+                  style: TextStyle(
+                    color: AppColors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text.rich(
+                  TextSpan(
+                    text: 'OTP sent to ',
+                    style: TextStyle(color: AppColors.lightGrey, fontSize: 14),
+                    children: [
+                      TextSpan(
+                        text: '+91 93622 53463',
+                        style: TextStyle(
+                          color: AppColors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text.rich(
-                TextSpan(
-                  text: 'OTP sent to ',
-                  style: TextStyle(color: AppColors.lightGrey, fontSize: 14),
-                  children: [
-                    TextSpan(
-                      text: '+91 93622 53463',
-                      style: TextStyle(
-                        color: AppColors.grey,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              //! Space between text and locker icon
-              SizedBox(width: 10),
 
-              Image.asset('assets/locker_image.png', height: 40, width: 40),
-            ],
-          ),
+          //! Right locker image
+          Image.asset('assets/locker_image.png', height: 48, width: 48),
         ],
       ),
     );
@@ -61,6 +63,7 @@ class SignupOtpWidgets {
             child: customRichText('Enter OTP'),
           ),
         ),
+        //! Otp text fields
         OtpBoxFields(onCompleted: (p0) {}),
         Align(
           alignment: Alignment.centerRight,

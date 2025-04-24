@@ -38,11 +38,15 @@ class SignupPhoneWidgets {
           ),
         ),
         //! Phone number input field
-        CustomPhoneField(
-          controller: phoneController,
-          prefixIcon: Text(
-            '+91',
-            style: const TextStyle(color: AppColors.grey, fontSize: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: CustomTextFormField(
+            controller: phoneController,
+            prefixIcon: Text(
+              '+91',
+              style: const TextStyle(color: AppColors.grey, fontSize: 16),
+            ),
+            keyboardType: TextInputType.phone,
           ),
         ),
 
@@ -83,11 +87,14 @@ class SignupPhoneWidgets {
         //! Space between terms and condition  Opt button
         const SizedBox(height: 30),
         //! Get Otp Button
-        customButton(
-          text: 'Get OTP',
-          onPressed: () {},
-          buttonColor: AppColors.stroke,
-          textColor: Colors.grey,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: customButton(
+            text: 'Get OTP',
+            onPressed: () {},
+            buttonColor: AppColors.stroke,
+            textColor: Colors.grey,
+          ),
         ),
         // ! Bottom spacing
         const SizedBox(height: 20),

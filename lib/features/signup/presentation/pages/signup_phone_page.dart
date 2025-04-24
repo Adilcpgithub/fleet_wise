@@ -20,8 +20,8 @@ class SignupPhoneNo extends StatelessWidget {
             child: IntrinsicHeight(
               child: Column(
                 children: [
-                  signupPhoneWidgets.topSideImage(),
-                  Spacer(),
+                  signupPhoneWidgets.buildTopSideImage(),
+                  signupPhoneWidgets.buildSpacer(),
                   signupPhoneWidgets.buildLoginSection(
                     phoneController,
                     context,

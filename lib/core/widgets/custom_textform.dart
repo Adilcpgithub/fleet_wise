@@ -2,42 +2,38 @@ import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class CustomPhoneField extends StatelessWidget {
+class CustomTextFormField extends StatelessWidget {
   final TextEditingController controller;
   Widget? prefixIcon;
   Widget? suffixIcon;
+  TextInputType? keyboardType;
   final String? Function(String?)? validator;
-  CustomPhoneField({
+  CustomTextFormField({
     super.key,
     required this.controller,
     this.validator,
     this.prefixIcon,
     this.suffixIcon,
+    this.keyboardType,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: TextFormField(
-        controller: controller,
-        cursorColor: AppColors.lightGrey,
-        keyboardType: TextInputType.phone,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: AppColors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16.0),
-            borderSide: BorderSide.none,
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: prefixIcon,
-          ),
-          suffixIcon: suffixIcon,
+    return TextFormField(
+      controller: controller,
+      cursorColor: AppColors.lightGrey,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: AppColors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16.0),
+          borderSide: BorderSide.none,
         ),
-        validator: validator,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
       ),
+      validator: validator,
     );
   }
 }

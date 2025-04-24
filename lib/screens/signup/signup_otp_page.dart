@@ -1,5 +1,5 @@
 import 'package:fleet_wise/core/theme/app_colors.dart';
-import 'package:fleet_wise/features/signup/presentation/widgets/signup_otp_widgets.dart';
+import 'package:fleet_wise/screens/signup/widgets/signup_otp_widgets.dart';
 import 'package:flutter/material.dart';
 
 class SignupOtpPage extends StatelessWidget {

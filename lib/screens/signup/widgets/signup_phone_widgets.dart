@@ -1,6 +1,6 @@
 import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/core/widgets/custom_textform.dart';
-import 'package:fleet_wise/features/signup/presentation/widgets/custom_button.dart';
+import 'package:fleet_wise/screens/signup/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

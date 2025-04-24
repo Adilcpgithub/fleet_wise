@@ -1,7 +1,7 @@
-import 'package:fleet_wise/features/signup/presentation/pages/signup_address_proof_page.dart';
-import 'package:fleet_wise/features/signup/presentation/pages/signup_name_page.dart';
-import 'package:fleet_wise/features/signup/presentation/pages/signup_otp_page.dart';
-import 'package:fleet_wise/features/signup/presentation/pages/signup_phone_page.dart';
+import 'package:fleet_wise/screens/signup/signup_address_proof_page.dart';
+import 'package:fleet_wise/screens/signup/signup_name_page.dart';
+import 'package:fleet_wise/screens/signup/signup_otp_page.dart';
+import 'package:fleet_wise/screens/signup/signup_phone_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

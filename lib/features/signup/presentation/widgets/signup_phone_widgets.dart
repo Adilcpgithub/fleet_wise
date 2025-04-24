@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignupPhoneWidgets {
   // ! Top side image
-  Widget topSideImage() {
+  Widget buildTopSideImage() {
     return Align(
       alignment: Alignment.topRight,
       child: SvgPicture.asset('assets/vector.svg', width: 444, height: 164),
@@ -100,5 +100,10 @@ class SignupPhoneWidgets {
         const SizedBox(height: 20),
       ],
     );
+  }
+
+  //! build space between widgets
+  buildSpacer() {
+    return const Spacer();
   }
 }

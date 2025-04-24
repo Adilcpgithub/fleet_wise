@@ -1,5 +1,6 @@
 import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/core/widgets/custom_textform.dart';
+import 'package:fleet_wise/features/signup/presentation/widgets/custom_button.dart';
 import 'package:fleet_wise/features/signup/presentation/widgets/custom_rich_text.dart';
 import 'package:flutter/material.dart';
 
@@ -49,7 +50,7 @@ class SignupNameWidgets {
   }
 
   // ! Full name text and Name field
-  Widget nameTextAndNameField() {
+  Widget buildNameTextAndNameField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -66,5 +67,25 @@ class SignupNameWidgets {
         ),
       ],
     );
+  }
+
+  //! Submit button
+  buildSubmitButton() {
+    return customButton(
+      text: 'SUBMIT',
+      onPressed: () {},
+      buttonColor: AppColors.stroke,
+      textColor: AppColors.grey,
+    );
+  }
+
+  // ! Custom SizedBox for height
+  buildSizedBoxHight(double height) {
+    return SizedBox(height: height);
+  }
+
+  //! build space between widgets
+  buildSpacer() {
+    return const Spacer();
   }
 }

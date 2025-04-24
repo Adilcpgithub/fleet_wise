@@ -1,12 +1,12 @@
 import 'package:fleet_wise/core/theme/app_colors.dart';
-import 'package:fleet_wise/features/signup/presentation/widgets/signup_phone_no_widgets.dart';
+import 'package:fleet_wise/features/signup/presentation/widgets/signup_phone_widgets.dart';
 import 'package:flutter/material.dart';
 
 class SignupPhoneNo extends StatelessWidget {
   const SignupPhoneNo({super.key});
   @override
   Widget build(BuildContext context) {
-    SignupPhoneWidgets signupPhoneWidgets = SignupPhoneWidgets();
+    final signupPhoneWidgets = SignupPhoneWidgets();
     final TextEditingController phoneController = TextEditingController();
     return Scaffold(
       backgroundColor: AppColors.baseColor,
@@ -21,7 +21,7 @@ class SignupPhoneNo extends StatelessWidget {
               child: Column(
                 children: [
                   signupPhoneWidgets.topSideImage(),
-                  const Spacer(),
+                  Spacer(),
                   signupPhoneWidgets.buildLoginSection(
                     phoneController,
                     context,

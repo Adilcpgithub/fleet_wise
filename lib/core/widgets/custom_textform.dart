@@ -3,23 +3,26 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class CustomTextFormField extends StatelessWidget {
-  final TextEditingController controller;
-  Widget? prefixIcon;
-  Widget? suffixIcon;
+  final TextEditingController? controller;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
   TextInputType? keyboardType;
+  final bool readOnly;
   final String? Function(String?)? validator;
   CustomTextFormField({
     super.key,
-    required this.controller,
+    this.controller,
     this.validator,
     this.prefixIcon,
     this.suffixIcon,
     this.keyboardType,
+    this.readOnly = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: readOnly,
       controller: controller,
       cursorColor: AppColors.lightGrey,
       keyboardType: keyboardType,
@@ -37,20 +40,3 @@ class CustomTextFormField extends StatelessWidget {
     );
   }
 }
-/**
-  Padding(
-            padding: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(color: AppColors.stroke),
-              ),
-              height: 34,
-              width: 92,
-              child: Center(
-                child: Text('Upload', style: TextStyle(color: AppColors.black)),
-              ),
-            ),
-          ),
-
-**/

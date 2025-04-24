@@ -1,3 +1,4 @@
+import 'package:fleet_wise/features/signup/presentation/pages/signup_address_proof_page.dart';
 import 'package:fleet_wise/features/signup/presentation/pages/signup_name_page.dart';
 import 'package:fleet_wise/features/signup/presentation/pages/signup_otp_page.dart';
 import 'package:fleet_wise/features/signup/presentation/pages/signup_phone_page.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: SignupNamePage(),
+      home: SignupAddressProofPage(),
     );
   }
 }

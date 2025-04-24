@@ -1,5 +1,6 @@
 import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/core/widgets/custom_textform.dart';
+import 'package:fleet_wise/features/signup/presentation/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -54,7 +55,7 @@ class SignupPhoneWidgets {
           text: TextSpan(
             style: const TextStyle(fontSize: 14, color: Colors.grey),
             children: [
-              const TextSpan(text: 'by continuing, you agree to our\n'),
+              TextSpan(text: AppLocalizations.of(context)!.termsAgreementIntro),
 
               TextSpan(
                 text: 'Terms of Use',
@@ -82,30 +83,11 @@ class SignupPhoneWidgets {
         //! Space between terms and condition  Opt button
         const SizedBox(height: 30),
         //! Get Otp Button
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-
-          child: InkWell(
-            onTap: () {},
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
-                color: AppColors.stroke,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'Get OTP',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
+        customButton(
+          text: 'Get OTP',
+          onPressed: () {},
+          buttonColor: AppColors.stroke,
+          textColor: Colors.grey,
         ),
         // ! Bottom spacing
         const SizedBox(height: 20),

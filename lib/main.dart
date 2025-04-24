@@ -1,3 +1,4 @@
+import 'package:fleet_wise/features/signup/presentation/pages/signup_otp_page.dart';
 import 'package:fleet_wise/features/signup/presentation/pages/signup_phone_no.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,9 +14,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // locale: Locale('en'),
+      locale: Locale('en'),
       supportedLocales: const [
-        Locale('en', ''), //!English
+        Locale('en'), //!English
       ],
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: SignupPhoneNo(),
+      home: SignupOtpPage(),
     );
   }
 }

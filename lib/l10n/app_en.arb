@@ -2,5 +2,6 @@
   "appName": "FleetWise",
   "loginTitle": "Login or register",
   "getOtp": "Get OTP",
-  "enterPhone": "Please enter your phone number"
+  "enterPhone": "Please enter your phone number",
+  "termsAgreementIntro": "by continuing, you agree to our\n"
 }

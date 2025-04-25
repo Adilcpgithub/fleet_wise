@@ -20,6 +20,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final response = await authService.sendOtp(event.phoneNumber);
+      if (response == null) {
+        emit(AuthFailure('Failed to send OTP'));
+        return;
+      }
       emit(OtpSent(response.requestId));
     } catch (e) {
       emit(AuthFailure('Failed to send OTP: $e'));
@@ -37,7 +41,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         otp: event.otp,
         requestId: event.requestId,
       );
-
+      if (authResponse == null) {
+        emit(AuthFailure('Failed to verify OTP'));
+        return;
+      }
+      //! Save tokens to secure storage
       await storageService.saveTokens(
         authResponse.accessToken,
         authResponse.refreshToken,
@@ -57,6 +65,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final refreshToken = await storageService.getRefreshToken();
       if (refreshToken != null) {
         final accessToken = await authService.refreshAccessToken(refreshToken);
+        if (accessToken == null) {
+          emit(AuthFailure('Failed to refresh access token'));
+          return;
+        }
         await storageService.saveTokens(accessToken, refreshToken);
         // You can emit a state like AccessTokenRefreshed(accessToken) if needed
       } else {

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:fleet_wise/services/local_storage_service.dart';
+import 'package:fleet_wise/services/secure_storage_service.dart';
+import 'package:fleet_wise/services/token_service.dart';
 import 'package:http/http.dart' as http;
 import '../models/auth_response_model.dart';
 import '../models/send_otp_response.dart';
@@ -8,8 +10,11 @@ import '../models/send_otp_response.dart';
 class AuthService {
   final String rootUrl =
       'https://avaronn-backend-development-server.pemy8f8ay9m4p.ap-south-1.cs.amazonlightsail.com/test';
+  final SecureStorageService secureStorageService = SecureStorageService();
+  //! Token Service for checking token expiration
+  final tokenService = TokenService();
 
-  Future<SendOtpResponse> sendOtp(String phoneNumber) async {
+  Future<SendOtpResponse?> sendOtp(String phoneNumber) async {
     final response = await http.post(
       Uri.parse('$rootUrl/sendOtp'),
       headers: {'Content-Type': 'application/json'},
@@ -19,12 +24,13 @@ class AuthService {
     if (response.statusCode == 200) {
       return SendOtpResponse.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Failed to send OTP');
+      log('Failed to send OTP: ${response.statusCode}');
+      return null;
     }
   }
 
   // ! VerifyOtp
-  Future<AuthResponseModel> verifyOtp({
+  Future<AuthResponseModel?> verifyOtp({
     required String phoneNumber,
     required String otp,
     required String requestId,
@@ -50,12 +56,13 @@ class AuthService {
     if (response.statusCode == 201) {
       return AuthResponseModel.fromJson(json.decode(response.body));
     } else {
-      throw Exception('OTP verification failed');
+      log('OTP verification failed: ${response.statusCode}');
+      return null;
     }
   }
 
-  //! Refresh Token
-  Future<String> refreshAccessToken(String refreshToken) async {
+  //! Access Token via refresh token
+  Future<String?> refreshAccessToken(String refreshToken) async {
     final response = await http.get(
       Uri.parse('$rootUrl/refreshAccessToken'),
       headers: {'refresh_token': refreshToken},
@@ -64,7 +71,8 @@ class AuthService {
     if (response.statusCode == 200) {
       return json.decode(response.body)['access_token'];
     } else {
-      throw Exception('Failed to refresh token');
+      log('Failed to refresh token: ${response.statusCode}');
+      return null;
     }
   }
 
@@ -79,6 +87,8 @@ class AuthService {
         },
         body: jsonEncode({'name': name}),
       );
+      // ! Check for token expiration
+      if (response.statusCode == 401) {}
 
       if (response.statusCode == 200 ||
           response.statusCode == 201 ||
@@ -90,11 +100,11 @@ class AuthService {
         return true;
       } else {
         log('Failed to update name: ${response.statusCode}');
-        throw Exception('Failed to update name: ${response.statusCode}');
+        return false;
       }
     } catch (e) {
       log('Error during updateName: $e');
-      throw Exception('Error during updateName: $e');
+      return false;
     }
   }
 }

@@ -41,7 +41,7 @@ class UploadService {
       return true;
     } else {
       log('File upload failed: ${response.statusCode}');
-      throw Exception('File upload failed: ${response.statusCode}');
+      return false;
     }
   }
 }

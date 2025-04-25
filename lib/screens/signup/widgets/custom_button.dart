@@ -5,6 +5,7 @@ Widget customButton({
   required VoidCallback onPressed,
   required Color buttonColor,
   required Color textColor,
+  Widget? circleAvatar,
 }) {
   return InkWell(
     onTap: onPressed,
@@ -17,14 +18,16 @@ Widget customButton({
         borderRadius: BorderRadius.circular(12),
       ),
       alignment: Alignment.center,
-      child: Text(
-        text,
-        style: TextStyle(
-          color: textColor,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child:
+          circleAvatar ??
+          Text(
+            text,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
     ),
   );
 }

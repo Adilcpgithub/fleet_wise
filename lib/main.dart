@@ -1,8 +1,7 @@
 import 'package:fleet_wise/providers/auth/auth_bloc.dart';
+import 'package:fleet_wise/providers/name_update_cubit/name_update_cubit.dart';
+import 'package:fleet_wise/screens/signup/signup_name_page.dart';
 import 'package:fleet_wise/screens/signup/signup_phone_page.dart';
-import 'package:fleet_wise/screens/splash/splash_page.dart';
-import 'package:fleet_wise/services/auth_service.dart';
-import 'package:fleet_wise/services/secure_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,6 +25,8 @@ class _MyAppState extends State<MyApp> {
       providers: [
         //! AuthBlocProvider
         BlocProvider(create: (_) => AuthBloc()),
+        //! NameUpdateCubitProvider
+        BlocProvider(create: (_) => NameUpdateCubit()),
       ],
       child: MaterialApp(
         locale: Locale('en'),

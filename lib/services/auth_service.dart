@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:fleet_wise/services/local_storage_service.dart';
 import 'package:http/http.dart' as http;
 import '../models/auth_response_model.dart';
 import '../models/send_otp_response.dart';
@@ -22,6 +23,7 @@ class AuthService {
     }
   }
 
+  // ! VerifyOtp
   Future<AuthResponseModel> verifyOtp({
     required String phoneNumber,
     required String otp,
@@ -52,6 +54,7 @@ class AuthService {
     }
   }
 
+  //! Refresh Token
   Future<String> refreshAccessToken(String refreshToken) async {
     final response = await http.get(
       Uri.parse('$rootUrl/refreshAccessToken'),
@@ -62,6 +65,33 @@ class AuthService {
       return json.decode(response.body)['access_token'];
     } else {
       throw Exception('Failed to refresh token');
+    }
+  }
+
+  // ! Update User Name
+  Future<bool> updateName(String name, String accessToken) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$rootUrl/updateName'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: jsonEncode({'name': name}),
+      );
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 204) {
+        await LocalStorageService().saveUserName(name); // Save locally
+        return true;
+      } else {
+        log('Failed to update name: ${response.statusCode}');
+        throw Exception('Failed to update name: ${response.statusCode}');
+      }
+    } catch (e) {
+      log('Error during updateName: $e');
+      throw Exception('Error during updateName: $e');
     }
   }
 }

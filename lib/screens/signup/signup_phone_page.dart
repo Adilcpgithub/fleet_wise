@@ -10,11 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignupPhoneNo extends StatelessWidget {
-  const SignupPhoneNo({super.key});
+  SignupPhoneNo({super.key});
+
+  final TextEditingController phoneController = TextEditingController();
+  final signupPhoneWidgets = SignupPhoneWidgets();
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final signupPhoneWidgets = SignupPhoneWidgets();
-    final TextEditingController phoneController = TextEditingController();
     return Scaffold(
       backgroundColor: AppColors.baseColor,
       body: SingleChildScrollView(
@@ -47,8 +49,9 @@ class SignupPhoneNo extends StatelessWidget {
                     signupPhoneWidgets.buildTopSideImage(),
                     signupPhoneWidgets.buildSpacer(),
                     signupPhoneWidgets.buildOtpVefiySection(
-                      phoneController,
-                      context,
+                      phoneController: phoneController,
+                      context: context,
+                      formKey: formKey,
                     ),
                   ],
                 ),

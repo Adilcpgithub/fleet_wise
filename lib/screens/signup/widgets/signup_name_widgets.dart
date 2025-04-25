@@ -1,8 +1,13 @@
 import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/core/widgets/custom_textform.dart';
+import 'package:fleet_wise/core/widgets/toast_message_custom.dart';
+import 'package:fleet_wise/providers/name_update_cubit/name_update_cubit.dart';
+import 'package:fleet_wise/providers/name_update_cubit/name_update_state.dart';
 import 'package:fleet_wise/screens/signup/widgets/custom_button.dart';
 import 'package:fleet_wise/screens/signup/widgets/custom_rich_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignupNameWidgets {
   //! header text and profile image
@@ -50,32 +55,73 @@ class SignupNameWidgets {
   }
 
   // ! Full name text and Name field
-  Widget buildNameTextAndNameField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        customRichText('Your Full Name', '*'),
-        CustomTextFormField(
-          controller: TextEditingController(),
-          keyboardType: TextInputType.name,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter your name';
-            }
-            return null;
-          },
-        ),
-      ],
+  Widget buildNameTextAndNameField({
+    required TextEditingController nameController,
+    required GlobalKey<FormState> formKey,
+  }) {
+    return Form(
+      key: formKey,
+      autovalidateMode: AutovalidateMode.disabled,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          customRichText('Your Full Name', '*'),
+          CustomTextFormField(
+            // formkey: formKey,
+            controller: nameController,
+            keyboardType: TextInputType.name,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your name';
+              }
+              if (value.length < 3) {
+                return 'Name must be at least 3 characters';
+              }
+              if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value)) {
+                return 'Name should only contain letters and spaces';
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
     );
   }
 
   //! Submit button
-  buildSubmitButton() {
-    return customButton(
-      text: 'SUBMIT',
-      onPressed: () {},
-      buttonColor: AppColors.stroke,
-      textColor: AppColors.grey,
+  buildSubmitButton({
+    required BuildContext context,
+    required String name,
+    required GlobalKey<FormState> formKey,
+  }) {
+    return BlocBuilder<NameUpdateCubit, NameUpdateState>(
+      builder: (context, state) {
+        bool isLoading = false;
+        if (state is NameUpdateLoading) {
+          isLoading = true;
+        }
+
+        return customButton(
+          text: 'SUBMIT',
+          onPressed: () {
+            if (formKey.currentState!.validate()) {
+              context.read<NameUpdateCubit>().updateName(name);
+            } else {
+              customToastMessage(
+                "Please enter a valid name",
+                AppColors.white,
+                AppColors.black,
+              );
+            }
+          },
+          buttonColor: AppColors.stroke,
+          textColor: AppColors.grey,
+          circleAvatar:
+              isLoading
+                  ? const CircularProgressIndicator(color: AppColors.grey)
+                  : null,
+        );
+      },
     );
   }
 

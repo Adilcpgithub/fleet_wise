@@ -1,37 +1,50 @@
-import 'package:fleet_wise/screens/signup/signup_address_proof_page.dart';
-import 'package:fleet_wise/screens/signup/signup_name_page.dart';
-import 'package:fleet_wise/screens/signup/signup_otp_page.dart';
+import 'package:fleet_wise/providers/auth/auth_bloc.dart';
 import 'package:fleet_wise/screens/signup/signup_phone_page.dart';
+import 'package:fleet_wise/screens/splash/splash_page.dart';
+import 'package:fleet_wise/services/auth_service.dart';
+import 'package:fleet_wise/services/secure_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      locale: Locale('en'),
-      supportedLocales: const [
-        Locale('en'), //!English
+    return MultiBlocProvider(
+      providers: [
+        //! AuthBlocProvider
+        BlocProvider(create: (_) => AuthBloc()),
       ],
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      debugShowCheckedModeBanner: false,
-      title: 'FleetWise',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      child: MaterialApp(
+        locale: Locale('en'),
+        supportedLocales: const [
+          Locale('en'), //!English
+        ],
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        debugShowCheckedModeBanner: false,
+        title: 'FleetWise',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        home: SignupPhoneNo(),
       ),
-      home: SignupAddressProofPage(),
     );
   }
 }

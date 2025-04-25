@@ -1,7 +1,10 @@
 import 'package:fleet_wise/core/theme/app_colors.dart';
+import 'package:fleet_wise/providers/auth/auth_bloc.dart';
+import 'package:fleet_wise/providers/auth/auth_event.dart';
 import 'package:fleet_wise/screens/signup/widgets/custom_rich_text.dart';
 import 'package:fleet_wise/screens/signup/widgets/opt_textformfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignupOtpWidgets {
   //!  Verify number text and otp sent to number
@@ -52,7 +55,11 @@ class SignupOtpWidgets {
   }
 
   //! Otp text field , Timer text and Resend text
-  Widget buildOtpfield() {
+  Widget buildOtpfield({
+    required BuildContext context,
+    required String phoneNumber,
+    required String requestId,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -64,7 +71,19 @@ class SignupOtpWidgets {
           ),
         ),
         //! Otp text fields
-        OtpBoxFields(onCompleted: (p0) {}),
+        OtpBoxFields(
+          onCompleted: (otp) {
+            if (otp.length == 6) {
+              context.read<AuthBloc>().add(
+                VerifyOtpEvent(
+                  otp: otp,
+                  phoneNumber: phoneNumber,
+                  requestId: requestId,
+                ),
+              );
+            }
+          },
+        ),
         Align(
           alignment: Alignment.centerRight,
           child: Padding(

@@ -1,7 +1,10 @@
 import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/core/widgets/custom_textform.dart';
+import 'package:fleet_wise/providers/auth/auth_bloc.dart';
+import 'package:fleet_wise/providers/auth/auth_event.dart';
 import 'package:fleet_wise/screens/signup/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -15,7 +18,7 @@ class SignupPhoneWidgets {
   }
 
   //! // ! Main login form section (logo, phone field, terms, button)
-  Widget buildLoginSection(
+  Widget buildOtpVefiySection(
     TextEditingController phoneController,
     BuildContext context,
   ) {
@@ -42,10 +45,21 @@ class SignupPhoneWidgets {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: CustomTextFormField(
             controller: phoneController,
-            prefixIcon: Text(
-              '+91',
-              style: const TextStyle(color: AppColors.grey, fontSize: 16),
+            prefixIcon: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                '+91',
+                style: const TextStyle(color: AppColors.grey, fontSize: 16),
+              ),
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your phone number';
+              } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                return 'Phone number must be 10 digits';
+              }
+              return null; // ✅ Valid
+            },
             keyboardType: TextInputType.phone,
           ),
         ),
@@ -91,7 +105,11 @@ class SignupPhoneWidgets {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: customButton(
             text: 'Get OTP',
-            onPressed: () {},
+            onPressed: () {
+              context.read<AuthBloc>().add(
+                SendOtpEvent(phoneNumber: phoneController.text),
+              );
+            },
             buttonColor: AppColors.stroke,
             textColor: Colors.grey,
           ),

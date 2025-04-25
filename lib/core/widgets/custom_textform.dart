@@ -36,7 +36,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       readOnly: widget.readOnly,
 
       controller: widget.controller,
-      autofocus: true,
+      //autofocus: true,
       cursorColor: AppColors.lightGrey,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(

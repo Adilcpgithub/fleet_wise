@@ -84,6 +84,9 @@ class AuthService {
           response.statusCode == 201 ||
           response.statusCode == 204) {
         await LocalStorageService().saveUserName(name); // Save locally
+        log('----name updated successfully----');
+        log('Response body: ${response.body}');
+        log('Response status: ${response.statusCode}');
         return true;
       } else {
         log('Failed to update name: ${response.statusCode}');

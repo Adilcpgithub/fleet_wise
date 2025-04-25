@@ -32,7 +32,10 @@ class _SignupNamePageState extends State<SignupNamePage> {
                 AppColors.white,
                 AppColors.black,
               );
-              CustomNavigation.push(context, SignupAddressProofPage());
+              CustomNavigation.push(
+                context,
+                SignupAddressProofPage(name: nameController.text),
+              );
             } else if (state is NameUpdateError) {
               ScaffoldMessenger.of(
                 context,

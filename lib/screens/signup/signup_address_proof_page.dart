@@ -2,12 +2,19 @@ import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/screens/signup/widgets/signup_address_proof_widgets.dart';
 import 'package:flutter/material.dart';
 
-class SignupAddressProofPage extends StatelessWidget {
-  const SignupAddressProofPage({super.key});
+class SignupAddressProofPage extends StatefulWidget {
+  final String name;
+  const SignupAddressProofPage({super.key, required this.name});
 
+  @override
+  State<SignupAddressProofPage> createState() => _SignupAddressProofPageState();
+}
+
+class _SignupAddressProofPageState extends State<SignupAddressProofPage> {
   @override
   Widget build(BuildContext context) {
     final signupAddressProofWidgets = SignupAddressProofWidgets();
+
     return Scaffold(
       backgroundColor: AppColors.baseColor,
       body: SafeArea(
@@ -22,18 +29,22 @@ class SignupAddressProofPage extends StatelessWidget {
                   signupAddressProofWidgets.sizedBoxheight(20),
                   signupAddressProofWidgets.buildProgressbar(),
                   signupAddressProofWidgets.sizedBoxheight(6),
-                  signupAddressProofWidgets.buildHeaderTextAndSkipButton(),
+                  signupAddressProofWidgets.buildHeaderTextAndSkipButton(
+                    widget.name,
+                    context,
+                  ),
                   signupAddressProofWidgets.sizedBoxheight(20),
-                  signupAddressProofWidgets.buildPanTextAndTextField(),
+                  signupAddressProofWidgets.buildPanTextAndTextField(context),
                   signupAddressProofWidgets.sizedBoxheight(20),
                   signupAddressProofWidgets
-                      .buildAadhaarCardFrontTextAndTextField(),
+                      .buildAadhaarCardFrontTextAndTextField(context),
 
                   signupAddressProofWidgets.sizedBoxheight(20),
-                  signupAddressProofWidgets
-                      .buildAadharCardBackTextAndTextField(),
+                  signupAddressProofWidgets.buildAadharCardBackTextAndTextField(
+                    context,
+                  ),
                   signupAddressProofWidgets.buildspacer(),
-                  signupAddressProofWidgets.buildSubmitButton(),
+                  signupAddressProofWidgets.buildSubmitButton(context),
                   signupAddressProofWidgets.sizedBoxheight(20),
                 ],
               ),

@@ -1,6 +1,8 @@
+import 'package:fleet_wise/core/navigation/navigation_service.dart';
 import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/providers/auth/auth_bloc.dart';
 import 'package:fleet_wise/providers/auth/auth_event.dart';
+import 'package:fleet_wise/screens/signup/signup_phone_page.dart';
 import 'package:fleet_wise/screens/signup/widgets/custom_rich_text.dart';
 import 'package:fleet_wise/screens/signup/widgets/opt_textformfield.dart';
 import 'package:flutter/material.dart';
@@ -95,16 +97,19 @@ class SignupOtpWidgets {
     );
   }
 
-  Widget buildChangemobileNumber() {
+  Widget buildChangemobileNumber(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20, top: 20),
-      child: Text(
-        'Change your mobile Number',
-        style: const TextStyle(
-          decoration: TextDecoration.underline,
-          fontWeight: FontWeight.w500,
-          fontSize: 12,
-          color: Colors.grey,
+      child: GestureDetector(
+        onTap: () => CustomNavigation.pushReplacement(context, SignupPhoneNo()),
+        child: Text(
+          'Change your mobile Number',
+          style: const TextStyle(
+            decoration: TextDecoration.underline,
+            fontWeight: FontWeight.w500,
+            fontSize: 12,
+            color: Colors.grey,
+          ),
         ),
       ),
     );

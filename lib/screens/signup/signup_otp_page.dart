@@ -54,7 +54,7 @@ class SignupOtpPage extends StatelessWidget {
                   requestId: requestId,
                 ),
                 signupOtpWidgets.buildExpandedSpacer(height: 50),
-                signupOtpWidgets.buildChangemobileNumber(),
+                signupOtpWidgets.buildChangemobileNumber(context),
               ],
             ),
           ),

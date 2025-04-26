@@ -1,8 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:fleet_wise/core/navigation/navigation_service.dart';
 import 'package:fleet_wise/core/theme/app_colors.dart';
-import 'package:fleet_wise/providers/auth/auth_bloc.dart';
-import 'package:fleet_wise/providers/auth/auth_event.dart';
 import 'package:fleet_wise/screens/home/home_page.dart';
 import 'package:fleet_wise/screens/signup/signup_phone_page.dart';
 import 'package:fleet_wise/services/auth_service.dart';
@@ -60,6 +58,7 @@ class _SplashPageState extends State<SplashPage> {
       backgroundColor: AppColors.baseColor,
       body: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

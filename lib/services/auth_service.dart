@@ -73,16 +73,21 @@ class AuthService {
 
   //! Access Token via refresh token
   Future<String?> refreshAccessToken(String refreshToken) async {
-    final response = await http.get(
-      Uri.parse('$rootUrl/refreshAccessToken'),
-      headers: {'refresh_token': refreshToken},
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('$rootUrl/refreshAccessToken'),
+        headers: {'refresh_token': refreshToken},
+      );
 
-    if (response.statusCode == 200) {
-      return json.decode(response.body)['access_token'];
-    } else {
-      throw Exception('Failed to refresh token');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body)['access_token'];
+      } else {
+        log('refresh token failed1');
+      }
+    } catch (e) {
+      log('Error while RefreshtToken $e');
     }
+    return null;
   }
 
   // ! Update User Name

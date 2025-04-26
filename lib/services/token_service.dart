@@ -1,11 +1,24 @@
-import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
+import 'dart:developer';
 
 import 'package:fleet_wise/services/secure_storage_service.dart';
 import 'package:fleet_wise/services/auth_service.dart';
 
 class TokenService {
-  final SecureStorageService secureStorageService = SecureStorageService();
-  final AuthService authService = AuthService();
+  static final TokenService _instance = TokenService._internal();
+  // Private named constructor
+  TokenService._internal();
+
+  // Singleton accessor
+  static TokenService get instance => _instance;
+  late SecureStorageService secureStorageService;
+  late AuthService authService;
+  void init({
+    required SecureStorageService storage,
+    required AuthService auth,
+  }) {
+    secureStorageService = storage;
+    authService = auth;
+  }
 
   //! Checks if token is expired (401), and tries to refresh.
   //! Returns true if token was refreshed successfully, false otherwise.

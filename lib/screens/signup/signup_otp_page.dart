@@ -1,5 +1,6 @@
 import 'package:fleet_wise/core/navigation/navigation_service.dart';
 import 'package:fleet_wise/core/theme/app_colors.dart';
+import 'package:fleet_wise/core/widgets/toast_message_custom.dart';
 import 'package:fleet_wise/providers/auth/auth_bloc.dart';
 import 'package:fleet_wise/providers/auth/auth_state.dart';
 import 'package:fleet_wise/screens/signup/signup_name_page.dart';
@@ -28,6 +29,11 @@ class SignupOtpPage extends StatelessWidget {
             if (state is AuthVerified) {
               if (state.authData.exists) {
                 CustomNavigation.push(context, SignupNamePage());
+                customToastMessage(
+                  'Otp verification success',
+                  AppColors.white,
+                  AppColors.black,
+                );
               } else {
                 CustomNavigation.push(context, SignupPhoneNo());
               }

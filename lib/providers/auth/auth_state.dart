@@ -37,3 +37,15 @@ class AuthFailure extends AuthState {
   @override
   List<Object> get props => throw [message];
 }
+
+//! Checking Auth from Splsh screeen
+class AuthAutoLoginSuccess extends AuthState {
+  @override
+  List<Object> get props => [];
+}
+//! Checking Auth from Splsh screeen
+
+class AuthAutoLoginFailed extends AuthState {
+  @override
+  List<Object> get props => [];
+}

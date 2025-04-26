@@ -1,10 +1,13 @@
 import 'package:fleet_wise/providers/auth/auth_bloc.dart';
+import 'package:fleet_wise/providers/auth/auth_event.dart';
 import 'package:fleet_wise/providers/name_update_cubit/name_update_cubit.dart';
 import 'package:fleet_wise/providers/upload/upload_bloc.dart';
 import 'package:fleet_wise/screens/signup/signup_address_proof_page.dart';
 import 'package:fleet_wise/screens/signup/signup_name_page.dart';
 import 'package:fleet_wise/screens/signup/signup_phone_page.dart';
 import 'package:fleet_wise/screens/splash/splash_page.dart';
+import 'package:fleet_wise/services/auth_service.dart';
+import 'package:fleet_wise/services/token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -49,7 +52,7 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        home: SignupPhoneNo(),
+        home: SplashPage(),
       ),
     );
   }

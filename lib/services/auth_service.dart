@@ -8,13 +8,25 @@ import '../models/auth_response_model.dart';
 import '../models/send_otp_response.dart';
 
 class AuthService {
+  static final AuthService _instance = AuthService._internal();
+  // Private named constructor
+  AuthService._internal();
+
+  // Singleton accessor
+  static AuthService get instance => _instance;
   final String rootUrl =
       'https://avaronn-backend-development-server.pemy8f8ay9m4p.ap-south-1.cs.amazonlightsail.com/test';
-  final SecureStorageService secureStorageService = SecureStorageService();
-  //! Token Service for checking token expiration
-  final tokenService = TokenService();
+  late SecureStorageService secureStorageService;
+  late TokenService tokenService;
+  void init({
+    required SecureStorageService storage,
+    required TokenService token,
+  }) {
+    secureStorageService = storage;
+    tokenService = token;
+  }
 
-  Future<SendOtpResponse?> sendOtp(String phoneNumber) async {
+  Future<SendOtpResponse> sendOtp(String phoneNumber) async {
     final response = await http.post(
       Uri.parse('$rootUrl/sendOtp'),
       headers: {'Content-Type': 'application/json'},
@@ -24,13 +36,12 @@ class AuthService {
     if (response.statusCode == 200) {
       return SendOtpResponse.fromJson(json.decode(response.body));
     } else {
-      log('Failed to send OTP: ${response.statusCode}');
-      return null;
+      throw Exception('Failed to send OTP');
     }
   }
 
   // ! VerifyOtp
-  Future<AuthResponseModel?> verifyOtp({
+  Future<AuthResponseModel> verifyOtp({
     required String phoneNumber,
     required String otp,
     required String requestId,
@@ -56,8 +67,7 @@ class AuthService {
     if (response.statusCode == 201) {
       return AuthResponseModel.fromJson(json.decode(response.body));
     } else {
-      log('OTP verification failed: ${response.statusCode}');
-      return null;
+      throw Exception('OTP verification failed');
     }
   }
 
@@ -71,8 +81,7 @@ class AuthService {
     if (response.statusCode == 200) {
       return json.decode(response.body)['access_token'];
     } else {
-      log('Failed to refresh token: ${response.statusCode}');
-      return null;
+      throw Exception('Failed to refresh token');
     }
   }
 
@@ -89,7 +98,6 @@ class AuthService {
       );
       // ! Check for token expiration
       if (response.statusCode == 401) {}
-
       if (response.statusCode == 200 ||
           response.statusCode == 201 ||
           response.statusCode == 204) {
@@ -100,11 +108,11 @@ class AuthService {
         return true;
       } else {
         log('Failed to update name: ${response.statusCode}');
-        return false;
+        throw Exception('Failed to update name: ${response.statusCode}');
       }
     } catch (e) {
       log('Error during updateName: $e');
-      return false;
+      throw Exception('Error during updateName: $e');
     }
   }
 }

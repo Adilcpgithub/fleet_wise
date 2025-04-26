@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fleet_wise/models/auth_response_model.dart';
 import 'package:fleet_wise/providers/auth/auth_event.dart';
 import 'package:fleet_wise/providers/auth/auth_state.dart';
@@ -6,7 +8,7 @@ import 'package:fleet_wise/services/secure_storage_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthService authService = AuthService();
+  final authService = AuthService.instance;
   final SecureStorageService storageService = SecureStorageService();
 
   AuthBloc() : super(AuthInitial()) {
@@ -85,22 +87,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final accessToken = await storageService.getAccessToken();
     final refreshToken = await storageService.getRefreshToken();
-
+    final authService = AuthService.instance;
     if (accessToken != null && refreshToken != null) {
-      // Assume tokens are valid and go to home screen (or refresh if expired)
-      emit(
-        AuthVerified(
-          AuthResponseModel(
-            accessToken: accessToken,
-            refreshToken: refreshToken,
-            tokenType: 'bearer',
-            exists: true,
-            uuid: 'auto-login',
-          ),
-        ),
-      );
+      final newToken = await authService.refreshAccessToken(refreshToken);
+      //! If the access token is expired, refresh it
+      if (newToken != null) {
+        await storageService.saveTokens(newToken, refreshToken);
+        log('Access token refreshed successfully');
+        emit(AuthAutoLoginSuccess());
+        log('AuthAutoLoginSuccess');
+        return;
+      } else {
+        emit(AuthAutoLoginFailed());
+        log('AuthAutoLoginFailed');
+        return;
+      }
     } else {
-      emit(AuthInitial());
+      log('AuthAutoLoginFailed');
+      emit(AuthAutoLoginFailed());
     }
   }
 }

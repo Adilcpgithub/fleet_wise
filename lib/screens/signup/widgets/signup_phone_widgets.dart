@@ -33,7 +33,16 @@ class SignupPhoneWidgets {
 
         children: [
           //! App Name with logo
-          Image.asset('assets/CompanyName.png', height: 160),
+          Stack(
+            children: [
+              Positioned(
+                left: 15,
+                top: 60,
+                child: Image.asset('assets/untitledDesign.png', height: 55),
+              ),
+              SvgPicture.asset('assets/companyName.svg', height: 180),
+            ],
+          ),
           // ! Text
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),

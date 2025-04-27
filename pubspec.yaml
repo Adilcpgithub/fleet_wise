@@ -47,6 +47,7 @@ dependencies:
   fluttertoast: ^8.2.12
   mime: ^2.0.0
   image_picker: ^1.1.2
+  connectivity_plus: ^6.0.2
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,11 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/earning.svg
+    - assets/cost.svg 
+    - assets/trip.svg
+    - assets/vehicle.svg 
+    - assets/distance.svg
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

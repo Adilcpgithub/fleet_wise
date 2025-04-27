@@ -1,13 +1,10 @@
+import 'package:fleet_wise/core/widgets/toast_message_custom.dart';
 import 'package:fleet_wise/providers/auth/auth_bloc.dart';
-import 'package:fleet_wise/providers/auth/auth_event.dart';
+import 'package:fleet_wise/providers/cubit_connectivity/connectivitiy_cubit.dart';
 import 'package:fleet_wise/providers/name_update_cubit/name_update_cubit.dart';
+import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_bloc.dart';
 import 'package:fleet_wise/providers/upload/upload_bloc.dart';
-import 'package:fleet_wise/screens/signup/signup_address_proof_page.dart';
-import 'package:fleet_wise/screens/signup/signup_name_page.dart';
-import 'package:fleet_wise/screens/signup/signup_phone_page.dart';
 import 'package:fleet_wise/screens/splash/splash_page.dart';
-import 'package:fleet_wise/services/auth_service.dart';
-import 'package:fleet_wise/services/token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -29,30 +26,41 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        //!Connectivity Provider
+        BlocProvider(create: (_) => ConnectivityCubit()),
         //! AuthBlocProvider
         BlocProvider(create: (_) => AuthBloc()),
         //! NameUpdateCubitProvider
         BlocProvider(create: (_) => NameUpdateCubit()),
         // ! Upload document BlocProvider adhardhar front and back etc
         BlocProvider(create: (_) => UploadBloc()),
+        //! TodayPnLBlocProvider
+        BlocProvider(create: (_) => TodayPnLBloc()),
       ],
-      child: MaterialApp(
-        locale: Locale('en'),
-        supportedLocales: const [
-          Locale('en'), //!English
-        ],
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        debugShowCheckedModeBanner: false,
-        title: 'FleetWise',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      child: BlocListener<ConnectivityCubit, bool>(
+        listener: (context, state) {
+          if (!state) {
+            customToastMessage('You are offline');
+          }
+        },
+        child: MaterialApp(
+          locale: Locale('en'),
+          supportedLocales: const [
+            Locale('en'), //!English
+          ],
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          debugShowCheckedModeBanner: false,
+          title: 'FleetWise',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          ),
+          home: SplashPage(),
         ),
-        home: SplashPage(),
       ),
     );
   }

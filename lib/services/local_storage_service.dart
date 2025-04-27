@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService {
@@ -18,5 +20,25 @@ class LocalStorageService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_keyName);
     userName = 'Unknown';
+  }
+
+  //! Today PnL Functions
+  static Future<void> saveTodayPnLData(Map<String, dynamic> data) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('today_pnl', jsonEncode(data));
+  }
+
+  static Future<Map<String, dynamic>?> getTodayPnLData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('today_pnl');
+    if (jsonString != null) {
+      return jsonDecode(jsonString);
+    }
+    return null;
+  }
+
+  static Future<void> clearTodayPnLData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('today_pnl');
   }
 }

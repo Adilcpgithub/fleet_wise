@@ -9,10 +9,14 @@ class TodayPnLModel {
   TodayPnLModel({required this.vehicles, required this.header});
 
   factory TodayPnLModel.fromJson(Map<String, dynamic> json) {
-    final vehiclesJson = json['vehicles'] as List<dynamic>;
+    final vehiclesJson = json['vehicles'] as List<dynamic>? ?? [];
+    final headerJson = json['header'] as Map<String, dynamic>?; // 🔥 Safe cast
     return TodayPnLModel(
       vehicles: vehiclesJson.map((v) => VehicleData.fromJson(v)).toList(),
-      header: HeaderData.fromJson(json['header']),
+      header:
+          headerJson != null
+              ? HeaderData.fromJson(headerJson)
+              : HeaderData.empty(),
     );
   }
 }

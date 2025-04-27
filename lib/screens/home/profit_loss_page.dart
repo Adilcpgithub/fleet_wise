@@ -1,6 +1,12 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:fleet_wise/core/theme/app_colors.dart';
+import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_bloc.dart';
+import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_event.dart';
+import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_state.dart';
 import 'package:fleet_wise/services/profi_loss_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ProfitLossPage extends StatefulWidget {
   const ProfitLossPage({super.key});
@@ -11,6 +17,11 @@ class ProfitLossPage extends StatefulWidget {
 
 class _ProfitLossPageState extends State<ProfitLossPage> {
   String selectedFilter = "Today"; // Default selected filter
+  @override
+  void initState() {
+    context.read<TodayPnLBloc>().add(FetchTodayPnLEvent(useCache: true));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +58,8 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                       // ! remove this geture only for testin purpose
                       GestureDetector(
                         onTap: () async {
-                          ProfiLossService profiLossService =
-                              ProfiLossService();
+                          ProfilLossService profiLossService =
+                              ProfilLossService();
                           await profiLossService.getTodayPnL();
                         },
                         child: Row(
@@ -169,53 +180,125 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
 
   // ! Yesterday details list widget
   Widget _buildYesterdayContent() {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Profit/Loss",
-              style: TextStyle(color: Colors.white70, fontSize: 16),
-            ),
-            const SizedBox(width: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text(
-                "+₹7,374",
-                style: TextStyle(
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+    return FadeInUp(
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          FadeInDown(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Profit/Loss",
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
+                    "+₹7,374",
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16), // Add spacing between sections
+          SizedBox(
+            height: 500,
+            // color: Colors.grey[100],
+            child: RefreshIndicator(
+              onRefresh: () async {
+                context.read<TodayPnLBloc>().add(
+                  FetchTodayPnLEvent(useCache: false),
+                );
+              },
+              child: BlocBuilder<TodayPnLBloc, TodayPnLState>(
+                builder: (context, state) {
+                  if (state is TodayPnLLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is TodayPnLLoaded) {
+                    if (state.todayPnL.vehicles.isEmpty) {
+                      return Text(
+                        'no data fount',
+                        style: TextStyle(color: Colors.amber),
+                      );
+                    }
+
+                    final todayPnL = state.todayPnL;
+                    final header = todayPnL.header;
+                    final firstVehicle = todayPnL.vehicles[0];
+
+                    return ListView(
+                      children: [
+                        buildTransactionItem(
+                          image: "assets/earning.svg",
+                          title: "Earnings",
+                          subtitle: "₹500",
+                          suffixTitle: "₹ ${firstVehicle.earning}",
+                          suffixSubTitle: "predicted ₹1,200",
+                          color: Colors.green,
+                        ),
+                        buildTransactionItem(
+                          image: "assets/cost.svg",
+                          title: "Variable Cost",
+                          subtitle: "₹500",
+                          suffixTitle:
+                              "₹ ${firstVehicle.costing.toStringAsFixed(0)}",
+                          suffixSubTitle: "predicted ₹1,20",
+                          color: Colors.green,
+                        ),
+                        buildTransactionItem(
+                          image: "assets/trip.svg",
+                          title: "No. of trips completed",
+                          subtitle: "₹500",
+                          suffixTitle: header.tripsCompleted.toString(),
+                          color: Colors.green,
+                        ),
+                        buildTransactionItem(
+                          image: "assets/vehicle.svg",
+                          title: "Vehicles on the road",
+                          subtitle: "₹500",
+                          suffixTitle: header.vehiclesOnRoad.toString(),
+                          color: Colors.green,
+                        ),
+                        buildTransactionItem(
+                          image: "assets/distance.svg",
+                          title: "Total distance travelled",
+                          subtitle: "₹500",
+                          suffixTitle: "${header.totalDistance} km",
+                          color: Colors.green,
+                        ),
+                        SizedBox(height: 110),
+                      ],
+                    );
+                  } else if (state is TodayPnLError) {
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: TextStyle(color: Colors.amber),
+                      ),
+                    );
+                  } else {
+                    return const Center(child: Text('No data found.'));
+                  }
+                },
               ),
             ),
-          ],
-        ),
-
-        const SizedBox(height: 16), // Add spacing between sections
-        Container(
-          height: 500,
-          // color: Colors.grey[100],
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              return buildTransactionItem(
-                icon: Icons.local_gas_station,
-                title: "Petrol Paid",
-                amount: "₹500",
-                time: "10 minutes ago",
-                color: Colors.green,
-              );
-            },
-            itemCount: 10,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -260,31 +343,31 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
             children: [
               // Transaction items
               buildTransactionItem(
-                icon: Icons.local_gas_station,
+                image: "assets/cost.png",
                 title: "Petrol Paid",
-                amount: "₹500",
-                time: "10 minutes ago",
+                subtitle: "₹500",
+                suffixTitle: "10 minutes ago",
                 color: Colors.green,
               ),
               buildTransactionItem(
-                icon: Icons.filter_alt,
+                image: "assets/cost.png",
                 title: "Oil Filter Installed",
-                amount: "₹250",
-                time: "1 hour ago",
+                subtitle: "₹250",
+                suffixTitle: "1 hour ago",
                 color: Colors.blue,
               ),
               buildTransactionItem(
-                icon: Icons.tire_repair,
+                image: "assets/cost.png",
                 title: "Tyre Air Filled",
-                amount: "₹50",
-                time: "Yesterday at 5:30 PM",
+                subtitle: "₹50",
+                suffixTitle: "Yesterday at 5:30 PM",
                 color: Colors.orange,
               ),
               buildTransactionItem(
-                icon: Icons.oil_barrel,
+                image: "assets/cost.png",
                 title: "Oil change expense",
-                amount: "₹1,200",
-                time: "2 days ago",
+                subtitle: "₹1,200",
+                suffixTitle: "2 days ago",
                 color: Colors.purple,
               ),
               const SizedBox(height: 16),
@@ -381,31 +464,31 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
             children: [
               // Transaction items
               buildTransactionItem(
-                icon: Icons.local_gas_station,
+                image: "assets/earning.svg",
                 title: "Petrol Paid",
-                amount: "₹500",
-                time: "10 minutes ago",
+                subtitle: "₹500",
+                suffixTitle: "10 minutes ago",
                 color: Colors.green,
               ),
               buildTransactionItem(
-                icon: Icons.filter_alt,
+                image: "assets/Icon1.svg",
                 title: "Oil Filter Installed",
-                amount: "₹250",
-                time: "1 hour ago",
+                subtitle: "₹250",
+                suffixTitle: "1 hour ago",
                 color: Colors.blue,
               ),
               buildTransactionItem(
-                icon: Icons.tire_repair,
+                image: "assets/Icon2.svg",
                 title: "Tyre Air Filled",
-                amount: "₹50",
-                time: "Yesterday at 5:30 PM",
+                subtitle: "₹50",
+                suffixTitle: "Yesterday at 5:30 PM",
                 color: Colors.orange,
               ),
               buildTransactionItem(
-                icon: Icons.oil_barrel,
+                image: "assets/Icon3.svg",
                 title: "Oil change expense",
-                amount: "₹1,200",
-                time: "2 days ago",
+                subtitle: "₹1,200",
+                suffixTitle: "2 days ago",
                 color: Colors.purple,
               ),
               const SizedBox(height: 16),
@@ -462,22 +545,25 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
   }
 }
 
+//! Widget for icons , title and suffix etc
 Widget buildTransactionItem({
-  required IconData icon,
   required String title,
-  required String amount,
-  required String time,
+  required String subtitle,
+  required String suffixTitle,
+  required String image,
+  String? suffixSubTitle,
   required MaterialColor color,
 }) {
   return Container(
-    padding: const EdgeInsets.all(16),
-    margin: const EdgeInsets.only(bottom: 16),
+    height: 69,
+    padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 15),
+    margin: const EdgeInsets.only(bottom: 14),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.05),
+          color: Colors.black,
           blurRadius: 10,
           offset: const Offset(0, 2),
         ),
@@ -485,26 +571,49 @@ Widget buildTransactionItem({
     ),
     child: Row(
       children: [
-        Icon(icon, size: 40, color: color),
+        SizedBox(
+          height: 60,
+          child: SvgPicture.asset(image, height: 36, width: 36),
+        ),
         const SizedBox(width: 16),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 6),
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(amount, style: TextStyle(color: color, fontSize: 16)),
+
+              Text(
+                subtitle,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ],
           ),
         ),
         const SizedBox(width: 16),
-        Text(time, style: const TextStyle(color: Colors.grey)),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(suffixTitle, style: const TextStyle(color: Colors.black)),
+            suffixSubTitle != null
+                ? Text(
+                  suffixSubTitle,
+                  style: TextStyle(color: Color(0xFF757575), fontSize: 12),
+                )
+                : SizedBox.shrink(),
+          ],
+        ),
       ],
     ),
   );

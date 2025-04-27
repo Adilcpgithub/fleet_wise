@@ -5,10 +5,10 @@ import 'package:fleet_wise/services/auth_service.dart';
 
 class TokenService {
   static final TokenService _instance = TokenService._internal();
-  // Private named constructor
+  //! Private named constructor
   TokenService._internal();
 
-  // Singleton accessor
+  // ! Singleton accessor
   static TokenService get instance => _instance;
   late SecureStorageService secureStorageService;
   late AuthService authService;
@@ -20,30 +20,22 @@ class TokenService {
     authService = auth;
   }
 
-  //! Checks if token is expired (401), and tries to refresh.
-  //! Returns true if token was refreshed successfully, false otherwise.
-  Future<bool> handleTokenRefreshIfNeeded(int statusCode) async {
-    if (statusCode == 401) {
-      final refreshToken = await secureStorageService.getRefreshToken();
+  //! checking  Refreshing Access Token
+  Future<bool> refreshAccessToken() async {
+    final refreshToken = await secureStorageService.getRefreshToken();
 
-      if (refreshToken == null || refreshToken.isEmpty) {
-        // Optionally log this
-        log(' Refresh token not found. User should log in again.');
-        return false;
-      }
-
-      final newToken = await authService.refreshAccessToken(refreshToken);
-
-      if (newToken != null) {
-        await secureStorageService.saveTokens(newToken, refreshToken);
-        return true;
-      } else {
-        await secureStorageService.clearTokens();
-        log(' Session expired. Tokens cleared.');
-        return false;
-      }
+    if (refreshToken == null || refreshToken.isEmpty) {
+      return false;
     }
 
-    return false;
+    final newAccessToken = await authService.refreshAccessToken(refreshToken);
+
+    if (newAccessToken != null) {
+      await secureStorageService.saveTokens(newAccessToken, refreshToken);
+      return true;
+    } else {
+      await secureStorageService.clearTokens();
+      return false;
+    }
   }
 }

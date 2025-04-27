@@ -3,6 +3,7 @@ import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_bloc.dart';
 import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_event.dart';
 import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_state.dart';
+import 'package:fleet_wise/services/local_storage_service.dart';
 import 'package:fleet_wise/services/profi_loss_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,118 +17,186 @@ class ProfitLossPage extends StatefulWidget {
 }
 
 class _ProfitLossPageState extends State<ProfitLossPage> {
+  dd() async {
+    name = await localStorageService.getUserName() ?? 'Unknow';
+  }
+
+  final LocalStorageService localStorageService = LocalStorageService();
+  String name = '';
+
   String selectedFilter = "Today"; // Default selected filter
   @override
   void initState() {
     context.read<TodayPnLBloc>().add(FetchTodayPnLEvent(useCache: true));
+    dd();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF94716B), Color(0xFF101010)],
-            stops: [
-              30 / (MediaQuery.of(context).size.height - 180), // top 50px
-              90 /
-                  (MediaQuery.of(context).size.height -
-                      180), // sharp cut to next color
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        height: MediaQuery.of(context).size.height - 180,
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            // Top section with gradient background and profit display
+            //!
             Container(
-              //! changed color
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF94716B), Color(0xFF101010)],
+                  stops: [
+                    30 / (MediaQuery.of(context).size.height - 180),
+                    90 / (MediaQuery.of(context).size.height - 180),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              width: 430,
+              height: MediaQuery.of(context).size.height - 110,
+              child: Stack(
+                children: [
+                  Stack(
                     children: [
-                      const SizedBox(height: 16),
+                      Positioned(
+                        top: 0,
 
-                      // ! Header section
-                      // ! remove this geture only for testin purpose
-                      GestureDetector(
-                        onTap: () async {
-                          ProfilLossService profiLossService =
-                              ProfilLossService();
-                          await profiLossService.getTodayPnL();
-                        },
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2,
-                                ),
-                              ),
-                              child: const CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                child: Icon(
-                                  Icons.person_outline,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  "Namaste 🙏",
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 14,
+                        child: SizedBox(
+                          height: 430,
+
+                          width: 430,
+                          child: Image.asset(
+                            'assets/row_column.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, top: 37),
+                        child: SizedBox(
+                          height: 355,
+                          width: 417,
+                          child: Image.asset(
+                            'assets/background_dots.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      // Top section with gradient background and profit display
+                      Positioned(
+                        top: 10,
+                        child: SizedBox(
+                          //! changed color
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 60),
+
+                                // ! Header section
+                                // ! remove this geture only for testin purpose
+                                GestureDetector(
+                                  onTap: () async {
+                                    ProfilLossService profiLossService =
+                                        ProfilLossService();
+                                    await profiLossService.getTodayPnL();
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/Avaronn.png",
+                                        height: 60,
+                                        width: 60,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Namaste 🙏",
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          Text(
+                                            "$name Ji",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Text(
-                                  "Raman Ji",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+
+                                const SizedBox(height: 25),
+
+                                // Filter buttons
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    _buildFilterButton("Yesterday"),
+                                    _buildFilterButton("Today"),
+                                    _buildFilterButton("Monthly"),
+                                  ],
                                 ),
+
+                                const SizedBox(height: 2),
                               ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
 
-                      const SizedBox(height: 24),
-
-                      // Filter buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildFilterButton("Yesterday"),
-                          _buildFilterButton("Today"),
-                          _buildFilterButton("Monthly"),
-                        ],
+                      // Dynamic content based on selected filter
+                      Expanded(
+                        child: Container(
+                          child: _buildContentForSelectedFilter(),
+                        ),
                       ),
-
-                      const SizedBox(height: 24),
                     ],
                   ),
+                ],
+              ),
+            ),
+            // Second Container
+            SizedBox(
+              height: 200,
+
+              child: Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Image.asset(
+                        'assets/ambulance.png',
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                    Text(
+                      'Vehicles Overview',
+                      style: TextStyle(
+                        color: AppColors.black,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 22,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-
-            // Dynamic content based on selected filter
-            Expanded(child: Container(child: _buildContentForSelectedFilter())),
           ],
         ),
       ),
@@ -144,21 +213,30 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
         });
       },
       child: Container(
+        margin: EdgeInsets.only(right: 10),
+        width: 112,
+        height: 41,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.white,
+          color: isSelected ? Colors.white : Color.fromARGB(31, 255, 255, 255),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? Colors.blue : Colors.white,
-            width: 2,
+            color:
+                isSelected
+                    ? AppColors.white
+                    : const Color.fromARGB(142, 255, 255, 255),
+            width: 1,
           ),
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-            //  color: isSelected ? Colors.black : Colors.white,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            fontSize: 14,
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+              //  color: isSelected ? Colors.black : Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: isSelected ? AppColors.black : Colors.white,
+            ),
           ),
         ),
       ),
@@ -180,50 +258,91 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
 
   // ! Yesterday details list widget
   Widget _buildYesterdayContent() {
-    return FadeInUp(
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          FadeInDown(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Profit/Loss",
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
-                ),
-                const SizedBox(width: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Text(
-                    "+₹7,374",
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        FadeInDown(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Profit/Loss",
                     style: TextStyle(
-                      color: Colors.green,
+                      color: AppColors.white,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
                     ),
                   ),
+                  const Text(
+                    "Fri, 7 Mar",
+                    style: TextStyle(color: Colors.white38, fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
                 ),
-              ],
-            ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: BlocBuilder<TodayPnLBloc, TodayPnLState>(
+                  builder: (context, state) {
+                    String pnl = '0';
+                    if (state is TodayPnLLoaded) {
+                      if (state.todayPnL.header.profitOrLoss
+                          .toString()
+                          .isNotEmpty) {
+                        pnl =
+                            state.todayPnL.header.profitOrLoss
+                                .toInt()
+                                .toString();
+                      }
+                    }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "₹$pnl",
+                          style: TextStyle(
+                            color: Color(0xFF00CBA6),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        ),
+                        Text(
+                          "predicted: ₹1,523",
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
+        ),
 
-          const SizedBox(height: 16), // Add spacing between sections
-          SizedBox(
+        // const SizedBox(height: 16), // Add spacing between sections
+        RefreshIndicator(
+          onRefresh: () async {
+            context.read<TodayPnLBloc>().add(
+              FetchTodayPnLEvent(useCache: false),
+            );
+          },
+          child: SizedBox(
             height: 500,
             // color: Colors.grey[100],
-            child: RefreshIndicator(
-              onRefresh: () async {
-                context.read<TodayPnLBloc>().add(
-                  FetchTodayPnLEvent(useCache: false),
-                );
-              },
+            child: FadeInUp(
               child: BlocBuilder<TodayPnLBloc, TodayPnLState>(
                 builder: (context, state) {
                   if (state is TodayPnLLoading) {
@@ -297,8 +416,8 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

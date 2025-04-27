@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:fleet_wise/services/secure_storage_service.dart';
 import 'package:fleet_wise/services/auth_service.dart';
 

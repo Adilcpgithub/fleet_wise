@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:fleet_wise/models/auth_response_model.dart';
 import 'package:fleet_wise/providers/auth/auth_event.dart';
 import 'package:fleet_wise/providers/auth/auth_state.dart';
 import 'package:fleet_wise/services/auth_service.dart';

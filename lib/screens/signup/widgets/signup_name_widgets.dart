@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/core/widgets/custom_textform.dart';
 import 'package:fleet_wise/core/widgets/toast_message_custom.dart';
@@ -103,9 +105,10 @@ class SignupNameWidgets {
 
         return customButton(
           text: 'SUBMIT',
-          onPressed: () {
+          onPressed: () async {
             if (formKey.currentState!.validate()) {
               context.read<NameUpdateCubit>().updateName(name);
+              log('name cubit called');
             } else {
               customToastMessage(
                 "Please enter a valid name",

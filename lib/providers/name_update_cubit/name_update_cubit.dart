@@ -1,5 +1,7 @@
+import 'dart:developer';
+
+import 'package:fleet_wise/services/local_storage_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'name_update_state.dart';
 
 class NameUpdateCubit extends Cubit<NameUpdateState> {
@@ -10,10 +12,14 @@ class NameUpdateCubit extends Cubit<NameUpdateState> {
     emit(NameUpdateLoading()); // Emit loading state
 
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_name', name);
-
-      emit(NameUpdateSuccess(name));
+      LocalStorageService localStorageService = LocalStorageService();
+      if (name.isNotEmpty) {
+        await localStorageService.saveUserName(name);
+        emit(NameUpdateSuccess(name));
+      } else {
+        log('not name');
+        emit(NameUpdateError('No name'));
+      }
     } catch (e) {
       emit(NameUpdateError(e.toString()));
     }

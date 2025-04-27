@@ -16,13 +16,12 @@ class AuthService {
   static AuthService get instance => _instance;
   final String rootUrl =
       'https://avaronn-backend-development-server.pemy8f8ay9m4p.ap-south-1.cs.amazonlightsail.com/test';
-  late SecureStorageService secureStorageService;
+  final SecureStorageService secureStorageService = SecureStorageService();
   late TokenService tokenService;
   void init({
     required SecureStorageService storage,
     required TokenService token,
   }) {
-    secureStorageService = storage;
     tokenService = token;
   }
 
@@ -82,7 +81,7 @@ class AuthService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body)['access_token'];
       } else {
-        log('refresh token failed1');
+        log('refresh token failed1 ${response.statusCode}');
       }
     } catch (e) {
       log('Error while RefreshtToken $e');

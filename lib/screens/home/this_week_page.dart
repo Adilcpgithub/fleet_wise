@@ -7,8 +7,27 @@ class ThisWeekPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("This Week's Data")),
-      body: Center(
-        child: const Text("Data for This Week", style: TextStyle(fontSize: 18)),
+      body: Column(
+        children: [
+          Center(
+            child: const Text(
+              "Data for This Week",
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+          Center(
+            child: const Text(
+              "Data for This Week",
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+          Center(
+            child: const Text(
+              "Data for This Week",
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ],
       ),
     );
   }

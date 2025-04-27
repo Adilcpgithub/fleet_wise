@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:fleet_wise/core/navigation/navigation_service.dart';
 import 'package:fleet_wise/core/theme/app_colors.dart';
@@ -22,12 +24,8 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> checkLoginStatus() async {
     await Future.delayed(const Duration(seconds: 2)); // For splash animation
     final storage = SecureStorageService();
-    final authService = AuthService.instance;
-    final tokenService = TokenService.instance;
 
-    // Inject dependencies safely AFTER both singletons exist
-    authService.init(storage: storage, token: tokenService);
-    tokenService.init(storage: storage, auth: authService);
+    //! Inject dependencies safely AFTER both singletons exist
 
     final accessToken = await storage.getAccessToken();
     final refreshToken = await storage.getRefreshToken();
@@ -36,11 +34,13 @@ class _SplashPageState extends State<SplashPage> {
         accessToken.isNotEmpty &&
         refreshToken != null &&
         refreshToken.isNotEmpty) {
+      log('h');
       // ignore: use_build_context_synchronously
       CustomNavigation.pushReplacement(context, HomePage());
       //! creating new Access token
       //  authService.refreshAccessToken(refreshToken);
     } else {
+      log('koooi');
       // ignore: use_build_context_synchronously
       CustomNavigation.pushReplacement(context, SignupPhoneNo());
     }

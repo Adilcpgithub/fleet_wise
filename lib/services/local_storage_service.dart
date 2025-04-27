@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,6 +9,7 @@ class LocalStorageService {
   Future<void> saveUserName(String name) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyName, name);
+    log('name saved at local storage');
     userName = name;
   }
 

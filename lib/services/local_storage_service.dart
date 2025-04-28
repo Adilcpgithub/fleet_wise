@@ -13,9 +13,9 @@ class LocalStorageService {
     userName = name;
   }
 
-  Future<String?> getUserName() async {
+  Future<String> getUserName() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_keyName);
+    return prefs.getString(_keyName) ?? userName;
   }
 
   Future<void> clearUserName() async {
@@ -24,7 +24,7 @@ class LocalStorageService {
     userName = 'Unknown';
   }
 
-  //! Today PnL Functions
+  //! Today PnL data from Local storage
   static Future<void> saveTodayPnLData(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('today_pnl', jsonEncode(data));
@@ -43,4 +43,48 @@ class LocalStorageService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('today_pnl');
   }
+
+  //!----------------------
+  //! Yeserday PnL data from Local storage
+  static Future<void> saveYesterdayPnLData(Map<String, dynamic> data) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('yesterday_pnl', jsonEncode(data));
+  }
+
+  static Future<Map<String, dynamic>?> getYesterdayPnLData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('yesterday_pnl');
+    if (jsonString != null) {
+      return jsonDecode(jsonString);
+    }
+    return null;
+  }
+
+  static Future<void> clearYesterdayPnLData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('yesterday_pnl');
+  }
+
+  //!----------------------
+  //! Monthly PnL data from Local storage
+  static Future<void> saveMonthlyPnLData(Map<String, dynamic> data) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('monthly_pnl', jsonEncode(data));
+  }
+
+  static Future<Map<String, dynamic>?> getMonthlyPnLData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('monthly_pnl');
+    if (jsonString != null) {
+      return jsonDecode(jsonString);
+    }
+    return null;
+  }
+
+  static Future<void> clearMonthlyPnLData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('monthly_pnl');
+  }
+
+  //!----------------------
 }

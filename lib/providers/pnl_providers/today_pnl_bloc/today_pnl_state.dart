@@ -13,7 +13,7 @@ class TodayPnLInitial extends TodayPnLState {}
 class TodayPnLLoading extends TodayPnLState {}
 
 class TodayPnLLoaded extends TodayPnLState {
-  final TodayPnLModel todayPnL;
+  final PnLModel todayPnL;
 
   const TodayPnLLoaded({required this.todayPnL});
 

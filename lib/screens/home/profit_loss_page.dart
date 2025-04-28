@@ -1,10 +1,15 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:fleet_wise/core/theme/app_colors.dart';
-import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_bloc.dart';
-import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_event.dart';
-import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_state.dart';
+import 'package:fleet_wise/providers/pnl_providers/monthly_pnl_bloc/monthly_pnl_bloc.dart';
+import 'package:fleet_wise/providers/pnl_providers/monthly_pnl_bloc/monthly_pnl_event.dart';
+import 'package:fleet_wise/providers/pnl_providers/monthly_pnl_bloc/monthly_pnl_state.dart';
+import 'package:fleet_wise/providers/pnl_providers/today_pnl_bloc/today_pnl_bloc.dart';
+import 'package:fleet_wise/providers/pnl_providers/today_pnl_bloc/today_pnl_event.dart';
+import 'package:fleet_wise/providers/pnl_providers/today_pnl_bloc/today_pnl_state.dart';
+import 'package:fleet_wise/providers/pnl_providers/yesterday_pnl_bloc/yesterday_pnl_bloc.dart';
+import 'package:fleet_wise/providers/pnl_providers/yesterday_pnl_bloc/yesterday_pnl_event.dart';
+import 'package:fleet_wise/providers/pnl_providers/yesterday_pnl_bloc/yesterday_pnl_state.dart';
 import 'package:fleet_wise/services/local_storage_service.dart';
-import 'package:fleet_wise/services/profi_loss_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,15 +24,24 @@ class ProfitLossPage extends StatefulWidget {
 class _ProfitLossPageState extends State<ProfitLossPage> {
   dd() async {
     final LocalStorageService localStorageService = LocalStorageService();
-    name = await localStorageService.getUserName() ?? 'Unknow';
+    name = await localStorageService.getUserName();
   }
 
+  Map<String, Color> backgroundColor = {
+    'Yesterday': Color(0xFF94716B),
+    'Monthly': Color(0xFF3F5BD9),
+    'Today': Color(0xFF00725D),
+  };
   String name = '';
 
-  String selectedFilter = "Today"; // Default selected filter
+  String selectedFilter = "Today"; //! Default selected filter
   @override
   void initState() {
     context.read<TodayPnLBloc>().add(FetchTodayPnLEvent(useCache: true));
+    context.read<YesterdayPnlBloc>().add(
+      FetchYesterdayPnLEvent(useCache: true),
+    );
+    context.read<MonthlyPnlBloc>().add(FetchMonthlyPnLEvent(useCache: true));
     dd();
     super.initState();
   }
@@ -42,11 +56,8 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF94716B), Color(0xFF101010)],
-                  stops: [
-                    30 / (MediaQuery.of(context).size.height - 180),
-                    90 / (MediaQuery.of(context).size.height - 180),
-                  ],
+                  colors: [backgroundColor[selectedFilter]!, Color(0xFF101010)],
+                  stops: [0.0, 0.12],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -98,43 +109,36 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
 
                                 // ! Header section
                                 // ! remove this geture only for testin purpose
-                                GestureDetector(
-                                  onTap: () async {
-                                    ProfilLossService profiLossService =
-                                        ProfilLossService();
-                                    await profiLossService.getTodayPnL();
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Image.asset(
-                                        "assets/Avaronn.png",
-                                        height: 60,
-                                        width: 60,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Namaste 🙏",
-                                            style: TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 14,
-                                            ),
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/Avaronn.png",
+                                      height: 60,
+                                      width: 60,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Namaste 🙏",
+                                          style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 14,
                                           ),
-                                          Text(
-                                            "$name Ji",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                        ),
+                                        Text(
+                                          "$name Ji",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
 
                                 const SizedBox(height: 25),
@@ -291,6 +295,168 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                 ),
+                child: BlocBuilder<YesterdayPnlBloc, YesterdayPnlState>(
+                  builder: (context, state) {
+                    String pnl = '0';
+                    if (state is YesterdayPnLLoaded) {
+                      if (state.yesterdayPnL.header.profitOrLoss
+                          .toString()
+                          .isNotEmpty) {
+                        pnl =
+                            state.yesterdayPnL.header.profitOrLoss
+                                .toInt()
+                                .toString();
+                      }
+                    }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "₹$pnl",
+                          style: TextStyle(
+                            color: Color(0xFF00CBA6),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        ),
+                        Text(
+                          "predicted: ₹1,523",
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // const SizedBox(height: 16), // Add spacing between sections
+        RefreshIndicator(
+          onRefresh: () async {
+            context.read<YesterdayPnlBloc>().add(
+              FetchYesterdayPnLEvent(useCache: false),
+            );
+          },
+          child: SizedBox(
+            height: 500,
+            // color: Colors.grey[100],
+            child: FadeInUp(
+              child: BlocBuilder<YesterdayPnlBloc, YesterdayPnlState>(
+                builder: (context, state) {
+                  if (state is YesterdayPnLLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is YesterdayPnLLoaded) {
+                    if (state.yesterdayPnL.vehicles.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No data Please Login again',
+                          style: TextStyle(color: Colors.amber),
+                        ),
+                      );
+                    }
+
+                    final todayPnL = state.yesterdayPnL;
+                    final header = todayPnL.header;
+                    final firstVehicle = todayPnL.vehicles[0];
+
+                    return ListView(
+                      children: [
+                        buildTransactionItem(
+                          image: "assets/earning.svg",
+                          title: "Earnings",
+                          subtitle: "₹500",
+                          suffixTitle: "₹ ${firstVehicle.earning}",
+                          suffixSubTitle: "predicted ₹1,200",
+                        ),
+                        buildTransactionItem(
+                          image: "assets/cost.svg",
+                          title: "Variable Cost",
+                          subtitle: "₹500",
+                          suffixTitle:
+                              "₹ ${firstVehicle.costing.toStringAsFixed(0)}",
+                          suffixSubTitle: "predicted ₹1,20",
+                        ),
+                        buildTransactionItem(
+                          image: "assets/trip.svg",
+                          title: "No. of trips completed",
+                          subtitle: "₹500",
+                          suffixTitle: header.tripsCompleted.toString(),
+                        ),
+                        buildTransactionItem(
+                          image: "assets/vehicle.svg",
+                          title: "Vehicles on the road",
+                          subtitle: "₹500",
+                          suffixTitle: header.vehiclesOnRoad.toString(),
+                        ),
+                        buildTransactionItem(
+                          image: "assets/distance.svg",
+                          title: "Total distance travelled",
+                          subtitle: "₹500",
+                          suffixTitle: "${header.totalDistance} km",
+                        ),
+                        SizedBox(height: 110),
+                      ],
+                    );
+                  } else if (state is YesterdayPnLError) {
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: TextStyle(color: Colors.amber),
+                      ),
+                    );
+                  } else {
+                    return const Center(child: Text('No data found.'));
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ! Today details list widget
+  Widget _buildTodayContent() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        FadeInDown(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Profit/Loss",
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Text(
+                    "Fri, 7 Mar",
+                    style: TextStyle(color: Colors.white38, fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: BlocBuilder<TodayPnLBloc, TodayPnLState>(
                   builder: (context, state) {
                     String pnl = '0';
@@ -349,9 +515,11 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is TodayPnLLoaded) {
                     if (state.todayPnL.vehicles.isEmpty) {
-                      return Text(
-                        'no data fount',
-                        style: TextStyle(color: Colors.amber),
+                      return Center(
+                        child: Text(
+                          'No data Please Login again',
+                          style: TextStyle(color: Colors.amber),
+                        ),
                       );
                     }
 
@@ -367,7 +535,6 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                           subtitle: "₹500",
                           suffixTitle: "₹ ${firstVehicle.earning}",
                           suffixSubTitle: "predicted ₹1,200",
-                          color: Colors.green,
                         ),
                         buildTransactionItem(
                           image: "assets/cost.svg",
@@ -376,28 +543,24 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                           suffixTitle:
                               "₹ ${firstVehicle.costing.toStringAsFixed(0)}",
                           suffixSubTitle: "predicted ₹1,20",
-                          color: Colors.green,
                         ),
                         buildTransactionItem(
                           image: "assets/trip.svg",
                           title: "No. of trips completed",
                           subtitle: "₹500",
                           suffixTitle: header.tripsCompleted.toString(),
-                          color: Colors.green,
                         ),
                         buildTransactionItem(
                           image: "assets/vehicle.svg",
                           title: "Vehicles on the road",
                           subtitle: "₹500",
                           suffixTitle: header.vehiclesOnRoad.toString(),
-                          color: Colors.green,
                         ),
                         buildTransactionItem(
                           image: "assets/distance.svg",
                           title: "Total distance travelled",
                           subtitle: "₹500",
                           suffixTitle: "${header.totalDistance} km",
-                          color: Colors.green,
                         ),
                         SizedBox(height: 110),
                       ],
@@ -421,242 +584,162 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
     );
   }
 
-  // ! Today details list widget
-  Widget _buildTodayContent() {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Profit/Loss",
-              style: TextStyle(color: Colors.white70, fontSize: 16),
-            ),
-            const SizedBox(width: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text(
-                "+₹7,374",
-                style: TextStyle(
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16), // Add spacing between sections
-        Container(
-          color: Colors.grey[100],
-          child: ListView(
-            shrinkWrap: true, // Prevents infinite height issues
-            physics:
-                const NeverScrollableScrollPhysics(), // Disable nested scrolling
-            padding: const EdgeInsets.all(16),
-            children: [
-              // Transaction items
-              buildTransactionItem(
-                image: "assets/cost.png",
-                title: "Petrol Paid",
-                subtitle: "₹500",
-                suffixTitle: "10 minutes ago",
-                color: Colors.green,
-              ),
-              buildTransactionItem(
-                image: "assets/cost.png",
-                title: "Oil Filter Installed",
-                subtitle: "₹250",
-                suffixTitle: "1 hour ago",
-                color: Colors.blue,
-              ),
-              buildTransactionItem(
-                image: "assets/cost.png",
-                title: "Tyre Air Filled",
-                subtitle: "₹50",
-                suffixTitle: "Yesterday at 5:30 PM",
-                color: Colors.orange,
-              ),
-              buildTransactionItem(
-                image: "assets/cost.png",
-                title: "Oil change expense",
-                subtitle: "₹1,200",
-                suffixTitle: "2 days ago",
-                color: Colors.purple,
-              ),
-              const SizedBox(height: 16),
-              // Vehicles overview section
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: const [
-                        Icon(Icons.directions_car, size: 20),
-                        SizedBox(width: 8),
-                        Text(
-                          "Vehicles Overview",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildVehicleStats(
-                          Icons.directions_car,
-                          "2",
-                          "Total Vehicles",
-                        ),
-                        _buildVehicleStats(Icons.person, "3", "Total Drivers"),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   //! Monthly  details list widget
   Widget _buildThisMounthContent() {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Profit/Loss",
-              style: TextStyle(color: Colors.white70, fontSize: 16),
-            ),
-            const SizedBox(width: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text(
-                "+₹7,374",
-                style: TextStyle(
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16), // Add spacing between sections
-        Container(
-          color: Colors.grey[100],
-          child: ListView(
-            shrinkWrap: true, // Prevents infinite height issues
-            physics:
-                const NeverScrollableScrollPhysics(), // Disable nested scrolling
-            padding: const EdgeInsets.all(16),
+        FadeInDown(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Transaction items
-              buildTransactionItem(
-                image: "assets/earning.svg",
-                title: "Petrol Paid",
-                subtitle: "₹500",
-                suffixTitle: "10 minutes ago",
-                color: Colors.green,
-              ),
-              buildTransactionItem(
-                image: "assets/Icon1.svg",
-                title: "Oil Filter Installed",
-                subtitle: "₹250",
-                suffixTitle: "1 hour ago",
-                color: Colors.blue,
-              ),
-              buildTransactionItem(
-                image: "assets/Icon2.svg",
-                title: "Tyre Air Filled",
-                subtitle: "₹50",
-                suffixTitle: "Yesterday at 5:30 PM",
-                color: Colors.orange,
-              ),
-              buildTransactionItem(
-                image: "assets/Icon3.svg",
-                title: "Oil change expense",
-                subtitle: "₹1,200",
-                suffixTitle: "2 days ago",
-                color: Colors.purple,
-              ),
-              const SizedBox(height: 16),
-              // Vehicles overview section
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Profit/Loss",
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
+                  ),
+                  const Text(
+                    "Fri, 7 Mar",
+                    style: TextStyle(color: Colors.white38, fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: const [
-                        Icon(Icons.directions_car, size: 20),
-                        SizedBox(width: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: BlocBuilder<MonthlyPnlBloc, MonthlyPnLState>(
+                  builder: (context, state) {
+                    String pnl = '0';
+                    if (state is MonthlyPnLLoaded) {
+                      if (state.monthlyPnL.header.profitOrLoss
+                          .toString()
+                          .isNotEmpty) {
+                        pnl =
+                            state.monthlyPnL.header.profitOrLoss
+                                .toInt()
+                                .toString();
+                      }
+                    }
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
                         Text(
-                          "Vehicles Overview",
+                          "₹$pnl",
                           style: TextStyle(
+                            color: Color(0xFF00CBA6),
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 24,
+                          ),
+                        ),
+                        Text(
+                          "predicted: ₹1,523",
+                          style: TextStyle(
+                            color: Colors.white38,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
                           ),
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildVehicleStats(
-                          Icons.directions_car,
-                          "2",
-                          "Total Vehicles",
-                        ),
-                        _buildVehicleStats(Icons.person, "3", "Total Drivers"),
-                      ],
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ],
+          ),
+        ),
+
+        // const SizedBox(height: 16), // Add spacing between sections
+        RefreshIndicator(
+          onRefresh: () async {
+            context.read<MonthlyPnlBloc>().add(
+              FetchMonthlyPnLEvent(useCache: false),
+            );
+          },
+          child: SizedBox(
+            height: 500,
+
+            child: FadeInUp(
+              child: BlocBuilder<MonthlyPnlBloc, MonthlyPnLState>(
+                builder: (context, state) {
+                  if (state is MonthlyPnLLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is MonthlyPnLLoaded) {
+                    if (state.monthlyPnL.vehicles.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No data Please Login again',
+                          style: TextStyle(color: Colors.amber),
+                        ),
+                      );
+                    }
+
+                    final todayPnL = state.monthlyPnL;
+                    final header = todayPnL.header;
+                    final firstVehicle = todayPnL.vehicles[0];
+
+                    return ListView(
+                      children: [
+                        buildTransactionItem(
+                          image: "assets/earning.svg",
+                          title: "Earnings",
+                          subtitle: "₹500",
+                          suffixTitle: "₹ ${firstVehicle.earning}",
+                          suffixSubTitle: "predicted ₹1,200",
+                        ),
+                        buildTransactionItem(
+                          image: "assets/cost.svg",
+                          title: "Variable Cost",
+                          subtitle: "₹500",
+                          suffixTitle:
+                              "₹ ${firstVehicle.costing.toStringAsFixed(0)}",
+                          suffixSubTitle: "predicted ₹1,20",
+                        ),
+                        buildTransactionItem(
+                          image: "assets/trip.svg",
+                          title: "No. of trips completed",
+                          subtitle: "₹500",
+                          suffixTitle: header.tripsCompleted.toString(),
+                        ),
+                        buildTransactionItem(
+                          image: "assets/vehicle.svg",
+                          title: "Vehicles on the road",
+                          subtitle: "₹500",
+                          suffixTitle: header.vehiclesOnRoad.toString(),
+                        ),
+                        buildTransactionItem(
+                          image: "assets/distance.svg",
+                          title: "Total distance travelled",
+                          subtitle: "₹500",
+                          suffixTitle: "${header.totalDistance} km",
+                        ),
+                        SizedBox(height: 110),
+                      ],
+                    );
+                  } else if (state is MonthlyPnLError) {
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: TextStyle(color: Colors.amber),
+                      ),
+                    );
+                  } else {
+                    return const Center(child: Text('No data found.'));
+                  }
+                },
+              ),
+            ),
           ),
         ),
       ],
@@ -671,7 +754,6 @@ Widget buildTransactionItem({
   required String suffixTitle,
   required String image,
   String? suffixSubTitle,
-  required MaterialColor color,
 }) {
   return Container(
     height: 69,
@@ -711,7 +793,7 @@ Widget buildTransactionItem({
               Text(
                 subtitle,
                 style: TextStyle(
-                  color: color,
+                  color: Color(0xFF757575),
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
                 ),

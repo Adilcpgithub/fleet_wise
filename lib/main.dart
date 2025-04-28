@@ -2,7 +2,9 @@ import 'package:fleet_wise/core/widgets/toast_message_custom.dart';
 import 'package:fleet_wise/providers/auth/auth_bloc.dart';
 import 'package:fleet_wise/providers/cubit_connectivity/connectivitiy_cubit.dart';
 import 'package:fleet_wise/providers/name_update_cubit/name_update_cubit.dart';
-import 'package:fleet_wise/providers/pnl_providers/today_pnl/today_pnl_bloc.dart';
+import 'package:fleet_wise/providers/pnl_providers/monthly_pnl_bloc/monthly_pnl_bloc.dart';
+import 'package:fleet_wise/providers/pnl_providers/today_pnl_bloc/today_pnl_bloc.dart';
+import 'package:fleet_wise/providers/pnl_providers/yesterday_pnl_bloc/yesterday_pnl_bloc.dart';
 import 'package:fleet_wise/providers/upload/upload_bloc.dart';
 import 'package:fleet_wise/screens/splash/splash_page.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,10 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => UploadBloc()),
         //! TodayPnLBlocProvider
         BlocProvider(create: (_) => TodayPnLBloc()),
+        //! YesterdayPnLBlocProvider
+        BlocProvider(create: (_) => YesterdayPnlBloc()),
+        //! MonthlyPnLBlocProvider
+        BlocProvider(create: (_) => MonthlyPnlBloc()),
       ],
       child: BlocListener<ConnectivityCubit, bool>(
         listener: (context, state) {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:fleet_wise/core/utils/status_code_check.dart';
 import 'package:fleet_wise/services/local_storage_service.dart';
 import 'package:fleet_wise/services/secure_storage_service.dart';
 import 'package:fleet_wise/services/token_service.dart';
@@ -32,7 +33,7 @@ class AuthService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'country_code': "91", 'phone_number': phoneNumber}),
     );
-
+    handleApiError(response.statusCode);
     if (response.statusCode == 200) {
       return SendOtpResponse.fromJson(json.decode(response.body));
     } else {

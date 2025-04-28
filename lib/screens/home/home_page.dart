@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:fleet_wise/core/navigation/navigation_service.dart';
+import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/screens/account/account_page.dart';
 import 'package:fleet_wise/screens/home/profit_loss_page.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 //!--------------------------
 class HomePage extends StatelessWidget {
@@ -11,313 +15,406 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          // Top section with gradient background
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFF1E3A8A), Color(0xFF2563EB)],
-              ),
-            ),
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Status bar time and indicators
-                    const SizedBox(height: 8),
-                    // App name
-                    const Center(
-                      child: Text(
-                        "FleetWise",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w500,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    // ! User greeting with avatar
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 60,
-                          height: 60,
-
-                          child: Image.asset('assets/Avaronn.png'),
-                        ),
-                        const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              "Namaste 🙏",
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
-                              ),
-                            ),
-                            Text(
-                              "Raman Ji",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // Main content
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Profit tracking card
-                    GestureDetector(
-                      onTap: () {
-                        //! Goto profit and loss page
-                        CustomNavigation.push(context, ProfitLossPage());
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 16),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage('assets/iPhone15.png'),
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Track Your Profit & Loss in",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const Text(
-                              "Real-Time!",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            // Phone mockup image
-                            Image.asset(
-                              'assets/phone_mockup.png',
-                              height: 200,
-                              // Use a placeholder until you have the actual image
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  height: 200,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black45,
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.white24),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [const SizedBox(height: 16)],
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 12),
-                            const Text(
-                              "See your profit and loss grow",
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const Text(
-                              "as your vehicle runs!",
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // Action buttons
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.add, size: 18),
-                            label: const Text("Add First Vehicle"),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.black,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                side: const BorderSide(color: Colors.black12),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.add, size: 18),
-                            label: const Text("Add First Driver"),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.black,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                side: const BorderSide(color: Colors.black12),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    // What you get section
-                    const SizedBox(height: 20),
-                    const Text(
-                      "What You Get On FleetWise:",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    // Feature cards (placeholder)
-                    Container(
-                      height: 120,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          _buildFeatureCard("Real-time Tracking", Colors.green),
-                          _buildFeatureCard(
-                            "Expense Management",
-                            Colors.orange,
-                          ),
-                          _buildFeatureCard("Driver Management", Colors.purple),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // Bottom navigation bar
-          Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
-                  offset: Offset(0, -2),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
                 children: [
-                  _buildNavItem(Icons.home, "Home", true),
-                  _buildNavItem(Icons.directions_car, "Vehicles", false),
-                  _buildNavItem(Icons.person, "Drivers", false),
-                  GestureDetector(
-                    onTap: () => CustomNavigation.push(context, AccountPage()),
-                    child: _buildNavItem(
-                      Icons.account_circle,
-                      "Account",
-                      false,
+                  // Top section with gradient background
+                  Container(
+                    width: double.infinity,
+                    height: 700,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF3F5BD9), Color(0xFF101010)],
+                        stops: [0.0, 0.4],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 0,
+
+                          child: SizedBox(
+                            height: 430,
+
+                            width: 430,
+                            child: Image.asset(
+                              'assets/row_column.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12, top: 37),
+                          child: SizedBox(
+                            height: 355,
+                            width: 417,
+                            child: Image.asset(
+                              'assets/background_dots.png',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 8.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Status bar time and indicators
+                              const SizedBox(height: 60),
+                              // App name
+                              const Center(
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Fleet',
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontStyle: FontStyle.italic,
+                                          fontWeight: FontWeight.w400,
+                                          color: AppColors.white,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: 'Wise',
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          color: AppColors.white,
+                                          //fontStyle: FontStyle.italic,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              // ! User greeting with avatar
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 60,
+                                    height: 60,
+
+                                    child: Image.asset('assets/Avaronn.png'),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: const [
+                                      Text(
+                                        "Namaste 🙏",
+                                        style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Raman Ji",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    // Profit tracking card
+                                    GestureDetector(
+                                      onTap: () {
+                                        //! Goto profit and loss page
+                                        CustomNavigation.push(
+                                          context,
+                                          ProfitLossPage(),
+                                        );
+                                      },
+                                      child: Container(
+                                        height: 398,
+                                        width: 398,
+                                        margin: const EdgeInsets.only(top: 16),
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            width: 2,
+                                            color: const Color.fromARGB(
+                                              97,
+                                              171,
+                                              181,
+                                              189,
+                                            ), // Ensure AppColors.lightGrey is defined
+                                          ),
+                                          color: Colors.black45,
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Stack(
+                                          children: [
+                                            // Background image with padding
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 20,
+                                                  ), // Top/bottom padding
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                child: BackdropFilter(
+                                                  filter: ImageFilter.blur(
+                                                    sigmaX: 10.0,
+                                                    sigmaY: 10.0,
+                                                  ), // Blur effect
+                                                  child: Container(
+                                                    width: double.infinity,
+                                                    height:
+                                                        326, // 398 - 16 (top padding) - 16 (bottom padding) - 20 (vertical top) - 20 (vertical bottom)
+                                                    decoration: const BoxDecoration(
+                                                      image: DecorationImage(
+                                                        image: AssetImage(
+                                                          'assets/iPhone15.png',
+                                                        ),
+                                                        fit:
+                                                            BoxFit
+                                                                .contain, // Scale image to fit within bounds
+                                                        alignment:
+                                                            Alignment
+                                                                .center, // Center the image
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            // Existing child (Column with Text widgets)
+                                            Center(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .center, // Center vertically
+                                                children: [
+                                                  const Text(
+                                                    "Track Your Profit & Loss in",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  const Text(
+                                                    "Real-Time!",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  const Expanded(
+                                                    child: SizedBox(height: 12),
+                                                  ),
+                                                  ClipRRect(
+                                                    child: const Text(
+                                                      "See your profit and loss grow",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const Text(
+                                                    "as your vehicle runs!",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                      fontFamily: 'Inter',
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+
+                                    // Action buttons
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 180,
+                                          height: 54,
+                                          child: Expanded(
+                                            child: ElevatedButton.icon(
+                                              onPressed: () {},
+                                              icon: const Icon(
+                                                Icons.add,
+                                                size: 18,
+                                              ),
+                                              label: const Text(
+                                                "Add First Vehicle",
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.white,
+                                                foregroundColor: Colors.black,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      vertical: 12,
+                                                    ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                  side: const BorderSide(
+                                                    color: Colors.black12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        SizedBox(
+                                          width: 180,
+                                          height: 54,
+                                          child: Expanded(
+                                            child: ElevatedButton.icon(
+                                              onPressed: () {},
+                                              icon: const Icon(
+                                                Icons.add,
+                                                size: 18,
+                                              ),
+                                              label: const Text(
+                                                "Add First Driver",
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.white,
+                                                foregroundColor: Colors.black,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      vertical: 12,
+                                                    ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                  side: const BorderSide(
+                                                    color: Colors.black12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    //   What you get section
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 25),
+                      child: Text(
+                        "What You Get On FleetWise:",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: AppColors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+
+                    children: [
+                      Image.asset('assets/Card_2.png', height: 195, width: 195),
+
+                      Image.asset(
+                        'assets/Card_Image_one.png',
+                        height: 200,
+                        width: 200,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/Card_3.png', height: 195, width: 195),
+
+                      Image.asset('assets/Card_4.png', height: 195, width: 195),
+                    ],
+                  ),
+                  // Feature cards (placeholder)
+                  const SizedBox(height: 60),
+                  // Main content
                 ],
               ),
             ),
-          ),
-        ],
+            //! Bottom navigation bar
+            Positioned(
+              bottom: 0,
+              child: Container(
+                height: 70,
+                width: MediaQuery.of(context).size.width,
+                color: AppColors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildNavItem('assets/Home.svg'),
+                      _buildNavItem('assets/Vehicles.svg'),
+                      _buildNavItem('assets/Drivers.svg'),
+                      GestureDetector(
+                        onTap:
+                            () => CustomNavigation.push(context, AccountPage()),
+                        child: _buildNavItem('assets/Account.svg'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildFeatureCard(String title, Color color) {
-    return Container(
-      width: 150,
-      margin: const EdgeInsets.only(right: 12),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [color.withOpacity(0.7), color],
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Center(
-        child: Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, bool isSelected) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          icon,
-          color: isSelected ? const Color(0xFF2563EB) : Colors.grey,
-          size: 24,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? const Color(0xFF2563EB) : Colors.grey,
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
+  Widget _buildNavItem(String image) {
+    return SizedBox(width: 100, child: SvgPicture.asset(image));
   }
 }

@@ -13,6 +13,7 @@ import 'package:fleet_wise/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 
 class ProfitLossPage extends StatefulWidget {
   const ProfitLossPage({super.key});
@@ -356,7 +357,10 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                       return Center(
                         child: Text(
                           'No data Please Login again',
-                          style: TextStyle(color: Colors.amber),
+                          style: TextStyle(
+                            color: AppColors.baseColor,
+                            fontSize: 18,
+                          ),
                         ),
                       );
                     }
@@ -411,7 +415,15 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                       ),
                     );
                   } else {
-                    return const Center(child: Text('No data found.'));
+                    return const Center(
+                      child: Text(
+                        'No data found.',
+                        style: TextStyle(
+                          color: AppColors.baseColor,
+                          fontSize: 18,
+                        ),
+                      ),
+                    );
                   }
                 },
               ),
@@ -518,7 +530,10 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                       return Center(
                         child: Text(
                           'No data Please Login again',
-                          style: TextStyle(color: Colors.amber),
+                          style: TextStyle(
+                            color: AppColors.baseColor,
+                            fontSize: 18,
+                          ),
                         ),
                       );
                     }
@@ -573,7 +588,15 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                       ),
                     );
                   } else {
-                    return const Center(child: Text('No data found.'));
+                    return const Center(
+                      child: Text(
+                        'No data found.',
+                        style: TextStyle(
+                          color: AppColors.baseColor,
+                          fontSize: 18,
+                        ),
+                      ),
+                    );
                   }
                 },
               ),
@@ -680,7 +703,10 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                       return Center(
                         child: Text(
                           'No data Please Login again',
-                          style: TextStyle(color: Colors.amber),
+                          style: TextStyle(
+                            color: AppColors.baseColor,
+                            fontSize: 18,
+                          ),
                         ),
                       );
                     }
@@ -735,7 +761,15 @@ class _ProfitLossPageState extends State<ProfitLossPage> {
                       ),
                     );
                   } else {
-                    return const Center(child: Text('No data found.'));
+                    return const Center(
+                      child: Text(
+                        'No data found.',
+                        style: TextStyle(
+                          color: AppColors.baseColor,
+                          fontSize: 18,
+                        ),
+                      ),
+                    );
                   }
                 },
               ),

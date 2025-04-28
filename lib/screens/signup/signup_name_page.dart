@@ -60,7 +60,7 @@ class _SignupNamePageState extends State<SignupNamePage> {
                   signupNameWidgets.buildSpacer(),
                   signupNameWidgets.buildSubmitButton(
                     context: context,
-                    name: nameController.text,
+                    nameController: nameController,
                     formKey: formKey,
                   ),
                   signupNameWidgets.buildSizedBoxHight(20),

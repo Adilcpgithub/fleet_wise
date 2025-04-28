@@ -93,7 +93,7 @@ class SignupNameWidgets {
   //! Submit button
   buildSubmitButton({
     required BuildContext context,
-    required String name,
+    required TextEditingController nameController,
     required GlobalKey<FormState> formKey,
   }) {
     return BlocBuilder<NameUpdateCubit, NameUpdateState>(
@@ -106,10 +106,18 @@ class SignupNameWidgets {
         return customButton(
           text: 'SUBMIT',
           onPressed: () async {
+            final name = nameController.text.trim();
+            log('your name is $name');
+
             if (formKey.currentState!.validate()) {
-              context.read<NameUpdateCubit>().updateName(name);
-              log('name cubit called');
+              if (name.isNotEmpty) {
+                log('Name is not empty, saving...');
+                context.read<NameUpdateCubit>().updateName(name);
+              } else {
+                log('Name is empty');
+              }
             } else {
+              log('Form validation failed.');
               customToastMessage(
                 "Please enter a valid name",
                 AppColors.white,

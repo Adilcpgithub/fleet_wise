@@ -10,15 +10,15 @@ class NameUpdateCubit extends Cubit<NameUpdateState> {
   //! Function to update name
   void updateName(String name) async {
     emit(NameUpdateLoading()); // Emit loading state
-
+    log('name is $name ');
     try {
-      LocalStorageService localStorageService = LocalStorageService();
+      final LocalStorageService localStorageService = LocalStorageService();
       if (name.isNotEmpty) {
         await localStorageService.saveUserName(name);
         emit(NameUpdateSuccess(name));
       } else {
         log('not name');
-        emit(NameUpdateError('No name'));
+        emit(NameUpdateError('Please try again'));
       }
     } catch (e) {
       emit(NameUpdateError(e.toString()));

@@ -8,15 +8,10 @@ class TokenService {
 
   // ! Singleton accessor
   static TokenService get instance => _instance;
-  late SecureStorageService secureStorageService;
-  late AuthService authService;
-  void init({
-    required SecureStorageService storage,
-    required AuthService auth,
-  }) {
-    secureStorageService = storage;
-    authService = auth;
-  }
+  final SecureStorageService secureStorageService = SecureStorageService();
+  final AuthService authService = AuthService.instance;
+
+  void init() {}
 
   //! checking  Refreshing Access Token
   Future<bool> refreshAccessToken() async {

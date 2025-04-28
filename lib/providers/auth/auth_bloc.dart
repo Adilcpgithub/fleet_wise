@@ -20,10 +20,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final response = await authService.sendOtp(event.phoneNumber);
-      if (response == null) {
-        emit(AuthFailure('Failed to send OTP'));
-        return;
-      }
       emit(OtpSent(response.requestId));
     } catch (e) {
       emit(AuthFailure('Failed to send OTP: $e'));
@@ -41,15 +37,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         otp: event.otp,
         requestId: event.requestId,
       );
-      if (authResponse == null) {
+      if (!authResponse.exists) {
         emit(AuthFailure('Failed to verify OTP'));
         return;
       }
+      log('verifiying the token');
       //! Save tokens to secure storage
       await storageService.saveTokens(
         authResponse.accessToken,
         authResponse.refreshToken,
       );
+      log('tokens saved');
 
       emit(AuthVerified(authResponse));
     } catch (e) {
@@ -63,19 +61,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       final refreshToken = await storageService.getRefreshToken();
-      if (refreshToken != null) {
-        final accessToken = await authService.refreshAccessToken(refreshToken);
-        if (accessToken == null) {
-          emit(AuthFailure('Failed to refresh access token'));
-          return;
-        }
-        await storageService.saveTokens(accessToken, refreshToken);
-        // You can emit a state like AccessTokenRefreshed(accessToken) if needed
-      } else {
+
+      if (refreshToken == null || refreshToken.isEmpty) {
+        log('No refresh token found.');
         emit(AuthFailure('No refresh token found'));
+        return;
       }
+
+      log('Trying to refresh access token...');
+
+      final newAccessToken = await authService.refreshAccessToken(refreshToken);
+
+      if (newAccessToken == null) {
+        log('Refresh token failed (422). Clearing tokens.');
+        await storageService.clearTokens(); // 🔥 Remove bad refresh token
+        emit(AuthFailure('Session expired. Please log in again.'));
+        return;
+      }
+
+      await storageService.saveTokens(newAccessToken, refreshToken);
+      log('Access token refreshed successfully');
+      //emit(AuthVerified());
     } catch (e) {
-      emit(AuthFailure('Failed to refresh token: $e'));
+      log('Failed to refresh token: $e');
+      emit(AuthFailure('Failed to refresh token.'));
     }
   }
 
@@ -83,25 +92,37 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AutoLoginEvent event,
     Emitter<AuthState> emit,
   ) async {
+    log('Auto login calling...');
+
     final accessToken = await storageService.getAccessToken();
     final refreshToken = await storageService.getRefreshToken();
-    final authService = AuthService.instance;
+
     if (accessToken != null && refreshToken != null) {
+      // ✅ First, try using the existing access token (avoid unnecessary refresh)
+      final isTokenValid = await authService.verifyAccessToken(accessToken);
+
+      if (isTokenValid) {
+        log('Access token is still valid');
+        emit(AuthAutoLoginSuccess());
+        return;
+      }
+
+      // ❌ If token is expired, THEN refresh
+      log('Access token expired. Trying to refresh...');
+
       final newToken = await authService.refreshAccessToken(refreshToken);
-      //! If the access token is expired, refresh it
+
       if (newToken != null) {
         await storageService.saveTokens(newToken, refreshToken);
         log('Access token refreshed successfully');
         emit(AuthAutoLoginSuccess());
-        log('AuthAutoLoginSuccess');
-        return;
       } else {
+        log('Refresh token failed');
+        await storageService.clearTokens(); // 🔥 Remove expired tokens
         emit(AuthAutoLoginFailed());
-        log('AuthAutoLoginFailed');
-        return;
       }
     } else {
-      log('AuthAutoLoginFailed');
+      log('No valid tokens found. Auto-login failed.');
       emit(AuthAutoLoginFailed());
     }
   }

@@ -18,10 +18,10 @@ class ProfitLossPage extends StatefulWidget {
 
 class _ProfitLossPageState extends State<ProfitLossPage> {
   dd() async {
+    final LocalStorageService localStorageService = LocalStorageService();
     name = await localStorageService.getUserName() ?? 'Unknow';
   }
 
-  final LocalStorageService localStorageService = LocalStorageService();
   String name = '';
 
   String selectedFilter = "Today"; // Default selected filter

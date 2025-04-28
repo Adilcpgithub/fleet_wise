@@ -4,6 +4,7 @@ import 'package:fleet_wise/services/local_storage_service.dart';
 import 'package:fleet_wise/services/secure_storage_service.dart';
 import 'package:fleet_wise/services/token_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import '../models/auth_response_model.dart';
 import '../models/send_otp_response.dart';
 
@@ -117,6 +118,22 @@ class AuthService {
     } catch (e) {
       log('Error during updateName: $e');
       throw Exception('Error during updateName: $e');
+    }
+  }
+
+  //!  Check Access Token still verify
+  Future<bool> verifyAccessToken(String accessToken) async {
+    try {
+      if (JwtDecoder.isExpired(accessToken)) {
+        // 🔥 Token expired
+        return false;
+      } else {
+        // 🔥 Token is still valid
+        return true;
+      }
+    } catch (e) {
+      // 🔥 In case token is badly formed or decoding fails
+      return false;
     }
   }
 }

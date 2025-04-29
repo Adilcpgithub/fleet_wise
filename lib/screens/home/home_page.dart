@@ -1,8 +1,28 @@
 import 'package:fleet_wise/screens/home/widgets/home_widgets.dart';
+import 'package:fleet_wise/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  updateUserName() async {
+    final LocalStorageService localStorageService = LocalStorageService();
+    name = await localStorageService.getUserName();
+
+    setState(() {});
+  }
+
+  String name = '';
+  @override
+  void initState() {
+    updateUserName();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +36,7 @@ class HomePage extends StatelessWidget {
               child: Column(
                 children: [
                   // !Top section with gradient background
-                  homeWidgets.buildheaderAndBackgroundPhoneImage(context),
+                  homeWidgets.buildheaderAndBackgroundPhoneImage(context, name),
                   //!SizedBox
                   homeWidgets.sizedBoxHeight(20),
                   // ! What you get On Wleetwise

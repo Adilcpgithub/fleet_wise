@@ -1,8 +1,6 @@
-import 'dart:developer';
-
 import 'package:fleet_wise/core/navigation/navigation_service.dart';
+import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/screens/signup/signup_phone_page.dart';
-import 'package:fleet_wise/services/local_storage_service.dart';
 import 'package:fleet_wise/services/secure_storage_service.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +10,7 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.baseColor,
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -19,46 +18,13 @@ class AccountPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 final SecureStorageService storage = SecureStorageService();
                 storage.clearTokens();
                 CustomNavigation.pushAndRemoveUntil(context, SignupPhoneNo());
               },
-              child: Column(
-                children: [
-                  Column(
-                    children: [
-                      Text('Logout', style: TextStyle(color: Colors.amber)),
-
-                      Text(
-                        'Logjiadoisdoout',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 50),
-            GestureDetector(
-              onTap: () async {
-                String name = 'dd';
-                LocalStorageService localStorageService = LocalStorageService();
-                name = await localStorageService.getUserName() ?? 'no name ';
-                log(' this is the result $name');
-              },
-              child: Text(' fetch name '),
-            ),
-            SizedBox(height: 80),
-            GestureDetector(
-              onTap: () async {
-                String name = 'dd';
-                LocalStorageService localStorageService = LocalStorageService();
-                await localStorageService.saveUserName('adil');
-                log('save pressed');
-              },
-              child: Text('Upload name '),
+              child: Text('Logout', style: TextStyle(color: Colors.black)),
             ),
           ],
         ),

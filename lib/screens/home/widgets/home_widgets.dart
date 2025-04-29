@@ -9,7 +9,7 @@ import 'package:flutter_svg/svg.dart';
 
 class HomeWidgets {
   // !Top section with gradient background
-  Widget buildheaderAndBackgroundPhoneImage(BuildContext context) {
+  Widget buildheaderAndBackgroundPhoneImage(BuildContext context, String name) {
     return Container(
       width: double.infinity,
       height: 700,
@@ -94,13 +94,13 @@ class HomeWidgets {
                     const SizedBox(width: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
                           "Namaste 🙏",
                           style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
                         Text(
-                          "Raman Ji",
+                          "$name Ji",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,

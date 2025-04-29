@@ -24,8 +24,10 @@ class TodayPnLBloc extends Bloc<TodayPnLEvent, TodayPnLState> {
       //! 1. Check Local Storage first
 
       if (event.useCache) {
+        log('fething today data form local');
         final localData = await LocalStorageService.getTodayPnLData();
         if (localData != null) {
+          log('not today data at local');
           final todayPnL = PnLModel.fromJson(localData);
           emit(TodayPnLLoaded(todayPnL: todayPnL));
         }

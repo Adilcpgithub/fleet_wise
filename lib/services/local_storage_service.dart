@@ -27,15 +27,29 @@ class LocalStorageService {
   //! Today PnL data from Local storage
   static Future<void> saveTodayPnLData(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
+    log('sssssssssssss');
     await prefs.setString('today_pnl', jsonEncode(data));
+    final confirm = prefs.getString('today_pnl');
+    log('🧪 Confirm saved value: ${prefs.getKeys()}');
+    // log('ddddddddddddddd');
+    log('Saving today PnL data: ${jsonEncode(data)}');
   }
 
   static Future<Map<String, dynamic>?> getTodayPnLData() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('today_pnl');
+    final jsonString = prefs.getString('today_pnl'); // No need for `await` here
+
     if (jsonString != null) {
-      return jsonDecode(jsonString);
+      log('✅ Today PnL data found in local storage.');
+      try {
+        return jsonDecode(jsonString) as Map<String, dynamic>;
+      } catch (e) {
+        log('❌ Failed to decode today_pnl JSON: $e');
+        return null;
+      }
     }
+
+    log('⚠️ No today_pnl data found in local storage.');
     return null;
   }
 

@@ -204,100 +204,167 @@ class ProfiltLossWidgets {
 
   // ! Yesterday details list widget
   Widget _buildYesterdayContent(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        FadeInDown(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Profit/Loss",
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<YesterdayPnlBloc>().add(
+          FetchYesterdayPnLEvent(useCache: false),
+        );
+      },
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          FadeInDown(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Profit/Loss",
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const Text(
-                    "Fri, 7 Mar",
-                    style: TextStyle(color: Colors.white38, fontSize: 16),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
+                    const Text(
+                      "Fri, 7 Mar",
+                      style: TextStyle(color: Colors.white38, fontSize: 16),
+                    ),
+                  ],
                 ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: BlocBuilder<YesterdayPnlBloc, YesterdayPnlState>(
+                    builder: (context, state) {
+                      String pnl = '0';
+                      if (state is YesterdayPnLLoaded) {
+                        if (state.yesterdayPnL.header.profitOrLoss
+                            .toString()
+                            .isNotEmpty) {
+                          pnl =
+                              state.yesterdayPnL.header.profitOrLoss
+                                  .toInt()
+                                  .toString();
+                        }
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "₹$pnl",
+                            style: TextStyle(
+                              color: Color(0xFF00CBA6),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                          ),
+                          Text(
+                            "predicted: ₹1,523",
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
+              ],
+            ),
+          ),
+
+          // const SizedBox(height: 16), // Add spacing between sections
+          RefreshIndicator(
+            onRefresh: () async {
+              context.read<YesterdayPnlBloc>().add(
+                FetchYesterdayPnLEvent(useCache: false),
+              );
+            },
+            child: SizedBox(
+              height: 500,
+              // color: Colors.grey[100],
+              child: FadeInUp(
                 child: BlocBuilder<YesterdayPnlBloc, YesterdayPnlState>(
                   builder: (context, state) {
-                    String pnl = '0';
-                    if (state is YesterdayPnLLoaded) {
-                      if (state.yesterdayPnL.header.profitOrLoss
-                          .toString()
-                          .isNotEmpty) {
-                        pnl =
-                            state.yesterdayPnL.header.profitOrLoss
-                                .toInt()
-                                .toString();
+                    if (state is YesterdayPnLLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is YesterdayPnLLoaded) {
+                      if (state.yesterdayPnL.vehicles.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'No data Please Login again',
+                            style: TextStyle(
+                              color: AppColors.baseColor,
+                              fontSize: 18,
+                            ),
+                          ),
+                        );
                       }
-                    }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "₹$pnl",
-                          style: TextStyle(
-                            color: Color(0xFF00CBA6),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
-                        ),
-                        Text(
-                          "predicted: ₹1,523",
-                          style: TextStyle(
-                            color: Colors.white38,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
 
-        // const SizedBox(height: 16), // Add spacing between sections
-        RefreshIndicator(
-          onRefresh: () async {
-            context.read<YesterdayPnlBloc>().add(
-              FetchYesterdayPnLEvent(useCache: false),
-            );
-          },
-          child: SizedBox(
-            height: 500,
-            // color: Colors.grey[100],
-            child: FadeInUp(
-              child: BlocBuilder<YesterdayPnlBloc, YesterdayPnlState>(
-                builder: (context, state) {
-                  if (state is YesterdayPnLLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is YesterdayPnLLoaded) {
-                    if (state.yesterdayPnL.vehicles.isEmpty) {
+                      final todayPnL = state.yesterdayPnL;
+                      final header = todayPnL.header;
+                      final firstVehicle = todayPnL.vehicles[0];
+
+                      return ListView(
+                        children: [
+                          buildTransactionItem(
+                            image: "assets/earning.svg",
+                            title: "Earnings",
+                            subtitle: "Total revenue generated",
+                            suffixTitle: "₹ ${firstVehicle.earning}",
+                            suffixSubTitle: "predicted ₹1,200",
+                          ),
+                          buildTransactionItem(
+                            image: "assets/cost.svg",
+                            title: "Variable Cost",
+                            subtitle: "Expenses & maintenance",
+                            suffixTitle:
+                                "₹ ${firstVehicle.costing.toStringAsFixed(0)}",
+                            suffixSubTitle: "predicted ₹1,20",
+                          ),
+                          buildTransactionItem(
+                            image: "assets/trip.svg",
+                            title: "No. of trips completed",
+                            subtitle: "Successful trips finished",
+                            suffixTitle: header.tripsCompleted.toString(),
+                          ),
+                          buildTransactionItem(
+                            image: "assets/vehicle.svg",
+                            title: "Vehicles on the road",
+                            subtitle: "Active fleet count",
+                            suffixTitle: header.vehiclesOnRoad.toString(),
+                          ),
+                          buildTransactionItem(
+                            image: "assets/distance.svg",
+                            title: "Total distance travelled",
+                            subtitle: "Kilometers covered by the fleet",
+                            suffixTitle: "${header.totalDistance} km",
+                          ),
+                          SizedBox(height: 110),
+                        ],
+                      );
+                    } else if (state is YesterdayPnLError) {
                       return Center(
                         child: Text(
-                          'No data Please Login again',
+                          state.message,
+                          style: TextStyle(color: Colors.amber),
+                        ),
+                      );
+                    } else {
+                      return const Center(
+                        child: Text(
+                          'No data found.',
                           style: TextStyle(
                             color: AppColors.baseColor,
                             fontSize: 18,
@@ -305,172 +372,179 @@ class ProfiltLossWidgets {
                         ),
                       );
                     }
-
-                    final todayPnL = state.yesterdayPnL;
-                    final header = todayPnL.header;
-                    final firstVehicle = todayPnL.vehicles[0];
-
-                    return ListView(
-                      children: [
-                        buildTransactionItem(
-                          image: "assets/earning.svg",
-                          title: "Earnings",
-                          subtitle: "Total revenue generated",
-                          suffixTitle: "₹ ${firstVehicle.earning}",
-                          suffixSubTitle: "predicted ₹1,200",
-                        ),
-                        buildTransactionItem(
-                          image: "assets/cost.svg",
-                          title: "Variable Cost",
-                          subtitle: "Expenses & maintenance",
-                          suffixTitle:
-                              "₹ ${firstVehicle.costing.toStringAsFixed(0)}",
-                          suffixSubTitle: "predicted ₹1,20",
-                        ),
-                        buildTransactionItem(
-                          image: "assets/trip.svg",
-                          title: "No. of trips completed",
-                          subtitle: "Successful trips finished",
-                          suffixTitle: header.tripsCompleted.toString(),
-                        ),
-                        buildTransactionItem(
-                          image: "assets/vehicle.svg",
-                          title: "Vehicles on the road",
-                          subtitle: "Active fleet count",
-                          suffixTitle: header.vehiclesOnRoad.toString(),
-                        ),
-                        buildTransactionItem(
-                          image: "assets/distance.svg",
-                          title: "Total distance travelled",
-                          subtitle: "Kilometers covered by the fleet",
-                          suffixTitle: "${header.totalDistance} km",
-                        ),
-                        SizedBox(height: 110),
-                      ],
-                    );
-                  } else if (state is YesterdayPnLError) {
-                    return Center(
-                      child: Text(
-                        state.message,
-                        style: TextStyle(color: Colors.amber),
-                      ),
-                    );
-                  } else {
-                    return const Center(
-                      child: Text(
-                        'No data found.',
-                        style: TextStyle(
-                          color: AppColors.baseColor,
-                          fontSize: 18,
-                        ),
-                      ),
-                    );
-                  }
-                },
+                  },
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   // ! Today details list widget
   Widget _buildTodayContent(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        FadeInDown(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Profit/Loss",
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<YesterdayPnlBloc>().add(
+          FetchYesterdayPnLEvent(useCache: false),
+        );
+      },
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          FadeInDown(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Profit/Loss",
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const Text(
-                    "Fri, 7 Mar",
-                    style: TextStyle(color: Colors.white38, fontSize: 16),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
+                    const Text(
+                      "Fri, 7 Mar",
+                      style: TextStyle(color: Colors.white38, fontSize: 16),
+                    ),
+                  ],
                 ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: BlocBuilder<TodayPnLBloc, TodayPnLState>(
+                    builder: (context, state) {
+                      String pnl = '0';
+                      if (state is TodayPnLLoaded) {
+                        if (state.todayPnL.header.profitOrLoss
+                            .toString()
+                            .isNotEmpty) {
+                          pnl =
+                              state.todayPnL.header.profitOrLoss
+                                  .toInt()
+                                  .toString();
+                        }
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "₹$pnl",
+                            style: TextStyle(
+                              color: Color(0xFF00CBA6),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                          ),
+                          Text(
+                            "predicted: ₹1,523",
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
+              ],
+            ),
+          ),
+
+          // const SizedBox(height: 16), // Add spacing between sections
+          RefreshIndicator(
+            onRefresh: () async {
+              context.read<TodayPnLBloc>().add(
+                FetchTodayPnLEvent(useCache: false),
+              );
+            },
+            child: SizedBox(
+              height: 500,
+
+              child: FadeInUp(
                 child: BlocBuilder<TodayPnLBloc, TodayPnLState>(
                   builder: (context, state) {
-                    String pnl = '0';
-                    if (state is TodayPnLLoaded) {
-                      if (state.todayPnL.header.profitOrLoss
-                          .toString()
-                          .isNotEmpty) {
-                        pnl =
-                            state.todayPnL.header.profitOrLoss
-                                .toInt()
-                                .toString();
+                    if (state is TodayPnLLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is TodayPnLLoaded) {
+                      if (state.todayPnL.vehicles.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'No data Please Login again',
+                            style: TextStyle(
+                              color: AppColors.baseColor,
+                              fontSize: 18,
+                            ),
+                          ),
+                        );
                       }
-                    }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "₹$pnl",
-                          style: TextStyle(
-                            color: Color(0xFF00CBA6),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
-                        ),
-                        Text(
-                          "predicted: ₹1,523",
-                          style: TextStyle(
-                            color: Colors.white38,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
 
-        // const SizedBox(height: 16), // Add spacing between sections
-        RefreshIndicator(
-          onRefresh: () async {
-            context.read<TodayPnLBloc>().add(
-              FetchTodayPnLEvent(useCache: false),
-            );
-          },
-          child: SizedBox(
-            height: 500,
+                      final todayPnL = state.todayPnL;
+                      final header = todayPnL.header;
+                      final firstVehicle = todayPnL.vehicles[0];
 
-            child: FadeInUp(
-              child: BlocBuilder<TodayPnLBloc, TodayPnLState>(
-                builder: (context, state) {
-                  if (state is TodayPnLLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is TodayPnLLoaded) {
-                    if (state.todayPnL.vehicles.isEmpty) {
+                      return ListView(
+                        children: [
+                          buildTransactionItem(
+                            image: "assets/earning.svg",
+                            title: "Earnings",
+                            subtitle: "Total revenue generated",
+                            suffixTitle: "₹ ${firstVehicle.earning}",
+                            suffixSubTitle: "predicted ₹1,200",
+                          ),
+                          buildTransactionItem(
+                            image: "assets/cost.svg",
+                            title: "Variable Cost",
+                            subtitle: "Expenses & maintenance",
+                            suffixTitle:
+                                "₹ ${firstVehicle.costing.toStringAsFixed(0)}",
+                            suffixSubTitle: "predicted ₹1,20",
+                          ),
+                          buildTransactionItem(
+                            image: "assets/trip.svg",
+                            title: "No. of trips completed",
+                            subtitle: "Successful trips finished",
+                            suffixTitle: header.tripsCompleted.toString(),
+                          ),
+                          buildTransactionItem(
+                            image: "assets/vehicle.svg",
+                            title: "Vehicles on the road",
+                            subtitle: "Active fleet count",
+                            suffixTitle: header.vehiclesOnRoad.toString(),
+                          ),
+                          buildTransactionItem(
+                            image: "assets/distance.svg",
+                            title: "Total distance travelled",
+                            subtitle: "Kilometers covered by the fleet",
+                            suffixTitle: "${header.totalDistance} km",
+                          ),
+                          SizedBox(height: 110),
+                        ],
+                      );
+                    } else if (state is TodayPnLError) {
                       return Center(
                         child: Text(
-                          'No data Please Login again',
+                          state.message,
+                          style: TextStyle(color: Colors.amber),
+                        ),
+                      );
+                    } else {
+                      return const Center(
+                        child: Text(
+                          'No data found.',
                           style: TextStyle(
                             color: AppColors.baseColor,
                             fontSize: 18,
@@ -478,172 +552,179 @@ class ProfiltLossWidgets {
                         ),
                       );
                     }
-
-                    final todayPnL = state.todayPnL;
-                    final header = todayPnL.header;
-                    final firstVehicle = todayPnL.vehicles[0];
-
-                    return ListView(
-                      children: [
-                        buildTransactionItem(
-                          image: "assets/earning.svg",
-                          title: "Earnings",
-                          subtitle: "Total revenue generated",
-                          suffixTitle: "₹ ${firstVehicle.earning}",
-                          suffixSubTitle: "predicted ₹1,200",
-                        ),
-                        buildTransactionItem(
-                          image: "assets/cost.svg",
-                          title: "Variable Cost",
-                          subtitle: "Expenses & maintenance",
-                          suffixTitle:
-                              "₹ ${firstVehicle.costing.toStringAsFixed(0)}",
-                          suffixSubTitle: "predicted ₹1,20",
-                        ),
-                        buildTransactionItem(
-                          image: "assets/trip.svg",
-                          title: "No. of trips completed",
-                          subtitle: "Successful trips finished",
-                          suffixTitle: header.tripsCompleted.toString(),
-                        ),
-                        buildTransactionItem(
-                          image: "assets/vehicle.svg",
-                          title: "Vehicles on the road",
-                          subtitle: "Active fleet count",
-                          suffixTitle: header.vehiclesOnRoad.toString(),
-                        ),
-                        buildTransactionItem(
-                          image: "assets/distance.svg",
-                          title: "Total distance travelled",
-                          subtitle: "Kilometers covered by the fleet",
-                          suffixTitle: "${header.totalDistance} km",
-                        ),
-                        SizedBox(height: 110),
-                      ],
-                    );
-                  } else if (state is TodayPnLError) {
-                    return Center(
-                      child: Text(
-                        state.message,
-                        style: TextStyle(color: Colors.amber),
-                      ),
-                    );
-                  } else {
-                    return const Center(
-                      child: Text(
-                        'No data found.',
-                        style: TextStyle(
-                          color: AppColors.baseColor,
-                          fontSize: 18,
-                        ),
-                      ),
-                    );
-                  }
-                },
+                  },
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   //! Monthly  details list widget
   Widget _buildThisMounthContent(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        FadeInDown(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Profit/Loss",
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<YesterdayPnlBloc>().add(
+          FetchYesterdayPnLEvent(useCache: false),
+        );
+      },
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          FadeInDown(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Profit/Loss",
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const Text(
-                    "Fri, 7 Mar",
-                    style: TextStyle(color: Colors.white38, fontSize: 16),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
+                    const Text(
+                      "Fri, 7 Mar",
+                      style: TextStyle(color: Colors.white38, fontSize: 16),
+                    ),
+                  ],
                 ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: BlocBuilder<MonthlyPnlBloc, MonthlyPnLState>(
+                    builder: (context, state) {
+                      String pnl = '0';
+                      if (state is MonthlyPnLLoaded) {
+                        if (state.monthlyPnL.header.profitOrLoss
+                            .toString()
+                            .isNotEmpty) {
+                          pnl =
+                              state.monthlyPnL.header.profitOrLoss
+                                  .toInt()
+                                  .toString();
+                        }
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "₹$pnl",
+                            style: TextStyle(
+                              color: Color(0xFF00CBA6),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                          ),
+                          Text(
+                            "predicted: ₹1,523",
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
+              ],
+            ),
+          ),
+
+          // const SizedBox(height: 16), // Add spacing between sections
+          RefreshIndicator(
+            onRefresh: () async {
+              context.read<MonthlyPnlBloc>().add(
+                FetchMonthlyPnLEvent(useCache: false),
+              );
+            },
+            child: SizedBox(
+              height: 500,
+
+              child: FadeInUp(
                 child: BlocBuilder<MonthlyPnlBloc, MonthlyPnLState>(
                   builder: (context, state) {
-                    String pnl = '0';
-                    if (state is MonthlyPnLLoaded) {
-                      if (state.monthlyPnL.header.profitOrLoss
-                          .toString()
-                          .isNotEmpty) {
-                        pnl =
-                            state.monthlyPnL.header.profitOrLoss
-                                .toInt()
-                                .toString();
+                    if (state is MonthlyPnLLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is MonthlyPnLLoaded) {
+                      if (state.monthlyPnL.vehicles.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'No data Please Login again',
+                            style: TextStyle(
+                              color: AppColors.baseColor,
+                              fontSize: 18,
+                            ),
+                          ),
+                        );
                       }
-                    }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "₹$pnl",
-                          style: TextStyle(
-                            color: Color(0xFF00CBA6),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
-                        ),
-                        Text(
-                          "predicted: ₹1,523",
-                          style: TextStyle(
-                            color: Colors.white38,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
 
-        // const SizedBox(height: 16), // Add spacing between sections
-        RefreshIndicator(
-          onRefresh: () async {
-            context.read<MonthlyPnlBloc>().add(
-              FetchMonthlyPnLEvent(useCache: false),
-            );
-          },
-          child: SizedBox(
-            height: 500,
+                      final todayPnL = state.monthlyPnL;
+                      final header = todayPnL.header;
+                      final firstVehicle = todayPnL.vehicles[0];
 
-            child: FadeInUp(
-              child: BlocBuilder<MonthlyPnlBloc, MonthlyPnLState>(
-                builder: (context, state) {
-                  if (state is MonthlyPnLLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is MonthlyPnLLoaded) {
-                    if (state.monthlyPnL.vehicles.isEmpty) {
+                      return ListView(
+                        children: [
+                          buildTransactionItem(
+                            image: "assets/earning.svg",
+                            title: "Earnings",
+                            subtitle: "Total revenue generated",
+                            suffixTitle: "₹ ${firstVehicle.earning}",
+                            suffixSubTitle: "predicted ₹1,200",
+                          ),
+                          buildTransactionItem(
+                            image: "assets/cost.svg",
+                            title: "Variable Cost",
+                            subtitle: "Expenses & maintenance",
+                            suffixTitle:
+                                "₹ ${firstVehicle.costing.toStringAsFixed(0)}",
+                            suffixSubTitle: "predicted ₹1,20",
+                          ),
+                          buildTransactionItem(
+                            image: "assets/trip.svg",
+                            title: "No. of trips completed",
+                            subtitle: "Successful trips finished",
+                            suffixTitle: header.tripsCompleted.toString(),
+                          ),
+                          buildTransactionItem(
+                            image: "assets/vehicle.svg",
+                            title: "Vehicles on the road",
+                            subtitle: "Active fleet count",
+                            suffixTitle: header.vehiclesOnRoad.toString(),
+                          ),
+                          buildTransactionItem(
+                            image: "assets/distance.svg",
+                            title: "Total distance travelled",
+                            subtitle: "Kilometers covered by the fleet",
+                            suffixTitle: "${header.totalDistance} km",
+                          ),
+                          SizedBox(height: 110),
+                        ],
+                      );
+                    } else if (state is MonthlyPnLError) {
                       return Center(
                         child: Text(
-                          'No data Please Login again',
+                          state.message,
+                          style: TextStyle(color: Colors.amber),
+                        ),
+                      );
+                    } else {
+                      return const Center(
+                        child: Text(
+                          'No data found.',
                           style: TextStyle(
                             color: AppColors.baseColor,
                             fontSize: 18,
@@ -651,73 +732,13 @@ class ProfiltLossWidgets {
                         ),
                       );
                     }
-
-                    final todayPnL = state.monthlyPnL;
-                    final header = todayPnL.header;
-                    final firstVehicle = todayPnL.vehicles[0];
-
-                    return ListView(
-                      children: [
-                        buildTransactionItem(
-                          image: "assets/earning.svg",
-                          title: "Earnings",
-                          subtitle: "Total revenue generated",
-                          suffixTitle: "₹ ${firstVehicle.earning}",
-                          suffixSubTitle: "predicted ₹1,200",
-                        ),
-                        buildTransactionItem(
-                          image: "assets/cost.svg",
-                          title: "Variable Cost",
-                          subtitle: "Expenses & maintenance",
-                          suffixTitle:
-                              "₹ ${firstVehicle.costing.toStringAsFixed(0)}",
-                          suffixSubTitle: "predicted ₹1,20",
-                        ),
-                        buildTransactionItem(
-                          image: "assets/trip.svg",
-                          title: "No. of trips completed",
-                          subtitle: "Successful trips finished",
-                          suffixTitle: header.tripsCompleted.toString(),
-                        ),
-                        buildTransactionItem(
-                          image: "assets/vehicle.svg",
-                          title: "Vehicles on the road",
-                          subtitle: "Active fleet count",
-                          suffixTitle: header.vehiclesOnRoad.toString(),
-                        ),
-                        buildTransactionItem(
-                          image: "assets/distance.svg",
-                          title: "Total distance travelled",
-                          subtitle: "Kilometers covered by the fleet",
-                          suffixTitle: "${header.totalDistance} km",
-                        ),
-                        SizedBox(height: 110),
-                      ],
-                    );
-                  } else if (state is MonthlyPnLError) {
-                    return Center(
-                      child: Text(
-                        state.message,
-                        style: TextStyle(color: Colors.amber),
-                      ),
-                    );
-                  } else {
-                    return const Center(
-                      child: Text(
-                        'No data found.',
-                        style: TextStyle(
-                          color: AppColors.baseColor,
-                          fontSize: 18,
-                        ),
-                      ),
-                    );
-                  }
-                },
+                  },
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

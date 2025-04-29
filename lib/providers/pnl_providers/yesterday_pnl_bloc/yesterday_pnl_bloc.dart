@@ -19,30 +19,29 @@ class YesterdayPnlBloc extends Bloc<YesterdayPnlEvent, YesterdayPnlState> {
     Emitter<YesterdayPnlState> emit,
   ) async {
     emit(YesterdayPnLLoading());
-
     try {
-      //! 1. Check Local Storage first
-
+      // ! 1. Check Local Storage first
       if (event.useCache) {
         final localData = await LocalStorageService.getYesterdayPnLData();
-        if (localData != null) {
+        if (localData != null && localData.isNotEmpty) {
           final yesterdayPnL = PnLModel.fromJson(localData);
           emit(YesterdayPnLLoaded(yesterdayPnL: yesterdayPnL));
+          return; // ! Stop here if cache used
         }
       }
 
       //! 2. Fetch fresh from API
       final data = await profilLossService.getYesterdayPnL();
       final yesterdayPnL = PnLModel.fromJson(data);
-      // !3. Save fresh data to LocalStorage
+
+      //! 3. Save to LocalStorage
       await LocalStorageService.saveYesterdayPnLData(data);
       emit(YesterdayPnLLoaded(yesterdayPnL: yesterdayPnL));
     } on SocketException catch (_) {
-      //! Internet not available!
+      //! 4. If internet fails, fallback to cache
       log('No Internet Connection');
-
       final localData = await LocalStorageService.getYesterdayPnLData();
-      if (localData != null) {
+      if (localData != null && localData.isNotEmpty) {
         final yesterdayPnL = PnLModel.fromJson(localData);
         emit(YesterdayPnLLoaded(yesterdayPnL: yesterdayPnL));
       } else {

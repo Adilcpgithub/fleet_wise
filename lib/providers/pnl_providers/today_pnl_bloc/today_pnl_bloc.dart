@@ -21,39 +21,59 @@ class TodayPnLBloc extends Bloc<TodayPnLEvent, TodayPnLState> {
     emit(TodayPnLLoading());
 
     try {
-      //! 1. Check Local Storage first
-
+      log('fetching todays  ');
+      // 1️ Use local cache if requested
       if (event.useCache) {
-        log('fething today data form local');
+        log(' Fetching TodayPnL from local storage...');
+        log('1111111111111111111111111111111111111111');
         final localData = await LocalStorageService.getTodayPnLData();
-        if (localData != null) {
-          log('not today data at local');
+        if (localData != null && localData.isNotEmpty) {
+          log(' Found TodayPnL in local storage.');
+          log('222222222222222222222222222222222222');
           final todayPnL = PnLModel.fromJson(localData);
           emit(TodayPnLLoaded(todayPnL: todayPnL));
+          log('33333333333333333333333333333333');
+          return;
+        } else {
+          log('444444444444444444444444444444444444');
+          log('❌ No TodayPnL in local storage.');
         }
       }
 
-      //! 2. Fetch fresh from API
+      // 2️ Fetch from API
+      log(' Fetching TodayPnL from API...');
+      log('55555555555555555555555555555');
       final data = await profilLossService.getTodayPnL();
       final todayPnL = PnLModel.fromJson(data);
-      // !3. Save fresh data to LocalStorage
+      log('66666666666666666666666666666');
+      if (todayPnL.vehicles.isNotEmpty) {
+        emit(TodayPnLError(message: 'No internet Connection'));
+      }
+      // 3️ Save to local
       await LocalStorageService.saveTodayPnLData(data);
-      emit(TodayPnLLoaded(todayPnL: todayPnL));
-    } on SocketException catch (_) {
-      //! Internet not available!
-      log('No Internet Connection');
+      log(' TodayPnL saved to local storage.');
+      log('777777777777777777777777777');
 
+      emit(TodayPnLLoaded(todayPnL: todayPnL));
+      log('88888888888888888888888888888');
+    } on SocketException catch (_) {
+      // 4️ Network is OFF, try cache fallback
+      log(' No Internet Connection. Trying local fallback...');
+      log('999999999999999999999999999999999999999');
       final localData = await LocalStorageService.getTodayPnLData();
-      if (localData != null) {
+      if (localData != null && localData.isNotEmpty) {
+        log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
         final todayPnL = PnLModel.fromJson(localData);
         emit(TodayPnLLoaded(todayPnL: todayPnL));
+        log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
       } else {
-        emit(
-          const TodayPnLError(message: 'No internet and no cached data found.'),
-        );
+        log('ccccccccccccccccccccccccccccccccccccc');
+        emit(TodayPnLError(message: 'No internet and no cached data found.'));
       }
     } catch (e) {
-      log(e.toString());
+      log('dddddddddddddddddddddddddddddddddddd');
+      // 5️ Any other unexpected error
+      log('❗ Unexpected error in TodayPnL fetch: $e');
       emit(TodayPnLError(message: e.toString()));
     }
   }

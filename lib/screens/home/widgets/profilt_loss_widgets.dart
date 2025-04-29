@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/providers/filter_bloc/filter_bloc.dart';
@@ -293,7 +295,7 @@ class ProfiltLossWidgets {
                       if (state.yesterdayPnL.vehicles.isEmpty) {
                         return Center(
                           child: Text(
-                            'No data Please Login again',
+                            'No internet connection',
                             style: TextStyle(
                               color: AppColors.baseColor,
                               fontSize: 18,
@@ -376,9 +378,7 @@ class ProfiltLossWidgets {
   Widget _buildTodayContent(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        context.read<YesterdayPnlBloc>().add(
-          FetchYesterdayPnLEvent(useCache: false),
-        );
+        context.read<TodayPnLBloc>().add(FetchTodayPnLEvent(useCache: false));
       },
       child: ListView(
         padding: const EdgeInsets.all(16),
@@ -470,10 +470,14 @@ class ProfiltLossWidgets {
                     if (state is TodayPnLLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is TodayPnLLoaded) {
+                      log('---------------------');
+                      log('${state.todayPnL.vehicles.length}');
+
+                      log('---------------------');
                       if (state.todayPnL.vehicles.isEmpty) {
                         return Center(
                           child: Text(
-                            'No data Please Login again',
+                            'No internet connection',
                             style: TextStyle(
                               color: AppColors.baseColor,
                               fontSize: 18,
@@ -556,8 +560,8 @@ class ProfiltLossWidgets {
   Widget _buildThisMounthContent(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        context.read<YesterdayPnlBloc>().add(
-          FetchYesterdayPnLEvent(useCache: false),
+        context.read<MonthlyPnlBloc>().add(
+          FetchMonthlyPnLEvent(useCache: false),
         );
       },
       child: ListView(
@@ -634,7 +638,6 @@ class ProfiltLossWidgets {
             ),
           ),
 
-          // const SizedBox(height: 16), // Add spacing between sections
           RefreshIndicator(
             onRefresh: () async {
               context.read<MonthlyPnlBloc>().add(
@@ -653,7 +656,7 @@ class ProfiltLossWidgets {
                       if (state.monthlyPnL.vehicles.isEmpty) {
                         return Center(
                           child: Text(
-                            'No data Please Login again',
+                            'No internet connection',
                             style: TextStyle(
                               color: AppColors.baseColor,
                               fontSize: 18,

@@ -212,7 +212,7 @@ class HomeWidgets {
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
-                                      fontFamily: 'Inter',
+
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),

@@ -25,9 +25,10 @@ class MonthlyPnlBloc extends Bloc<MonthlyPnlEvent, MonthlyPnLState> {
 
       if (event.useCache) {
         final localData = await LocalStorageService.getMonthlyPnLData();
-        if (localData != null) {
+        if (localData != null && localData.isNotEmpty) {
           final monthlyPnL = PnLModel.fromJson(localData);
           emit(MonthlyPnLLoaded(monthlyPnL: monthlyPnL));
+          return; //  Stop here if cache used
         }
       }
 
@@ -42,7 +43,7 @@ class MonthlyPnlBloc extends Bloc<MonthlyPnlEvent, MonthlyPnLState> {
       log('No Internet Connection');
 
       final localData = await LocalStorageService.getMonthlyPnLData();
-      if (localData != null) {
+      if (localData != null && localData.isNotEmpty) {
         final monthlyPnL = PnLModel.fromJson(localData);
         emit(MonthlyPnLLoaded(monthlyPnL: monthlyPnL));
       } else {

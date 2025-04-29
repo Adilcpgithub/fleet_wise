@@ -4,13 +4,11 @@ import 'package:fleet_wise/core/navigation/navigation_service.dart';
 import 'package:fleet_wise/core/theme/app_colors.dart';
 import 'package:fleet_wise/screens/account/account_page.dart';
 import 'package:fleet_wise/screens/home/profit_loss_page.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-//!--------------------------
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key});
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

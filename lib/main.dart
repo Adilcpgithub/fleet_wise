@@ -1,6 +1,7 @@
 import 'package:fleet_wise/core/widgets/toast_message_custom.dart';
 import 'package:fleet_wise/providers/auth/auth_bloc.dart';
 import 'package:fleet_wise/providers/cubit_connectivity/connectivitiy_cubit.dart';
+import 'package:fleet_wise/providers/filter_bloc/filter_bloc.dart';
 import 'package:fleet_wise/providers/name_update_cubit/name_update_cubit.dart';
 import 'package:fleet_wise/providers/pnl_providers/monthly_pnl_bloc/monthly_pnl_bloc.dart';
 import 'package:fleet_wise/providers/pnl_providers/today_pnl_bloc/today_pnl_bloc.dart';
@@ -43,6 +44,8 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => YesterdayPnlBloc()),
         //! MonthlyPnLBlocProvider
         BlocProvider(create: (_) => MonthlyPnlBloc()),
+        //! Filter For Pnl page navigation
+        BlocProvider(create: (_) => FilterBloc()),
       ],
       child: BlocListener<ConnectivityCubit, bool>(
         listener: (context, state) {

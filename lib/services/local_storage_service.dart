@@ -29,7 +29,7 @@ class LocalStorageService {
     final prefs = await SharedPreferences.getInstance();
     log('sssssssssssss');
     await prefs.setString('today_pnl', jsonEncode(data));
-    final confirm = prefs.getString('today_pnl');
+
     log('🧪 Confirm saved value: ${prefs.getKeys()}');
     // log('ddddddddddddddd');
     log('Saving today PnL data: ${jsonEncode(data)}');

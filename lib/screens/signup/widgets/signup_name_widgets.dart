@@ -9,7 +9,6 @@ import 'package:fleet_wise/screens/signup/widgets/custom_button.dart';
 import 'package:fleet_wise/screens/signup/widgets/custom_rich_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class SignupNameWidgets {
   //! header text and profile image

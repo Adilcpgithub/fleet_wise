@@ -19,7 +19,8 @@ import 'package:flutter_svg/svg.dart';
 class ProfiltLossWidgets {
   //!  Header and  Background Container with Row and column effect als yesterday,monthlt and today container
   buildHeaderwithBackgroundEffectAndData({
-    required String selectedFileter,
+    required String
+    selectedFileter, // Note: Consider renaming to selectedFilter
     required BuildContext context,
     required String name,
   }) {
@@ -45,10 +46,8 @@ class ProfiltLossWidgets {
             children: [
               Positioned(
                 top: 0,
-
                 child: SizedBox(
                   height: 430,
-
                   width: 430,
                   child: Image.asset(
                     'assets/row_column.png',
@@ -72,65 +71,56 @@ class ProfiltLossWidgets {
           Column(
             children: [
               // Top section with gradient background and profit display
-              Positioned(
-                top: 10,
-                child: SizedBox(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
+              Padding(
+                // Replaced Positioned with Padding
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 60),
+                    Row(
                       children: [
-                        const SizedBox(height: 60),
-
-                        Row(
+                        Image.asset(
+                          "assets/Avaronn.png",
+                          height: 60,
+                          width: 60,
+                        ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset(
-                              "assets/Avaronn.png",
-                              height: 60,
-                              width: 60,
+                            Text(
+                              "Namaste 🙏",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
                             ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Namaste 🙏",
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                Text(
-                                  "$name Ji",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              "$name Ji",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
-
-                        const SizedBox(height: 25),
-
-                        // Filter buttons
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildFilterButton("Yesterday", context),
-                            _buildFilterButton("Today", context),
-                            _buildFilterButton("Monthly", context),
-                          ],
-                        ),
-
-                        const SizedBox(height: 2),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 25),
+                    // Filter buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildFilterButton("Yesterday", context),
+                        _buildFilterButton("Today", context),
+                        _buildFilterButton("Monthly", context),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                  ],
                 ),
               ),
-
               // Dynamic content based on selected filter
               SizedBox(
                 height: 546,

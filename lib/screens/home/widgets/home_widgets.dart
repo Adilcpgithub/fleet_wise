@@ -111,179 +111,171 @@ class HomeWidgets {
                     ),
                   ],
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // Profit tracking card
-                      GestureDetector(
-                        onTap: () {
-                          //! Goto profit and loss page
-                          CustomNavigation.push(context, ProfitLossPage());
-                        },
-                        child: Container(
-                          height: 398,
-                          width: 398,
-                          margin: const EdgeInsets.only(top: 16),
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 2,
-                              color: const Color.fromARGB(
-                                97,
-                                171,
-                                181,
-                                189,
-                              ), // Ensure AppColors.lightGrey is defined
-                            ),
-                            color: Colors.black45,
-                            borderRadius: BorderRadius.circular(12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Profit tracking card
+                    GestureDetector(
+                      onTap: () {
+                        //! Goto profit and loss page
+                        CustomNavigation.push(context, ProfitLossPage());
+                      },
+                      child: Container(
+                        height: 398,
+                        width: 398,
+                        margin: const EdgeInsets.only(top: 16),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2,
+                            color: const Color.fromARGB(
+                              97,
+                              171,
+                              181,
+                              189,
+                            ), // Ensure AppColors.lightGrey is defined
                           ),
-                          child: Stack(
-                            children: [
-                              // Background image with padding
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 20,
-                                ), // Top/bottom padding
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                      sigmaX: 10.0,
-                                      sigmaY: 10.0,
-                                    ), // Blur effect
-                                    child: Container(
-                                      width: double.infinity,
-                                      height:
-                                          326, // 398 - 16 (top padding) - 16 (bottom padding) - 20 (vertical top) - 20 (vertical bottom)
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                            'assets/iPhone15.png',
-                                          ),
-                                          fit:
-                                              BoxFit
-                                                  .contain, // Scale image to fit within bounds
-                                          alignment:
-                                              Alignment
-                                                  .center, // Center the image
+                          color: Colors.black45,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Stack(
+                          children: [
+                            // Background image with padding
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 20,
+                              ), // Top/bottom padding
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 10.0,
+                                    sigmaY: 10.0,
+                                  ), // Blur effect
+                                  child: Container(
+                                    width: double.infinity,
+                                    height:
+                                        326, // 398 - 16 (top padding) - 16 (bottom padding) - 20 (vertical top) - 20 (vertical bottom)
+                                    decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                          'assets/iPhone15.png',
                                         ),
+                                        fit:
+                                            BoxFit
+                                                .contain, // Scale image to fit within bounds
+                                        alignment:
+                                            Alignment
+                                                .center, // Center the image
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              // Existing child (Column with Text widgets)
-                              Center(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .center, // Center vertically
-                                  children: [
-                                    const Text(
-                                      "Track Your Profit & Loss in",
+                            ),
+                            // Existing child (Column with Text widgets)
+                            Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .center, // Center vertically
+                                children: [
+                                  const Text(
+                                    "Track Your Profit & Loss in",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const Text(
+                                    "Real-Time!",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const Expanded(child: SizedBox(height: 12)),
+                                  ClipRRect(
+                                    child: const Text(
+                                      "See your profit and loss grow",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
-                                      ),
-                                    ),
-                                    const Text(
-                                      "Real-Time!",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const Expanded(child: SizedBox(height: 12)),
-                                    ClipRRect(
-                                      child: const Text(
-                                        "See your profit and loss grow",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                    const Text(
-                                      "as your vehicle runs!",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontFamily: 'Inter',
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  const Text(
+                                    "as your vehicle runs!",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
+                    ),
 
-                      // Action buttons
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 180,
+                    //!  Action buttons
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
                             height: 54,
-                            child: Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: () {},
-                                icon: const Icon(Icons.add, size: 18),
-                                label: const Text("Add First Vehicle"),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    side: const BorderSide(
-                                      color: Colors.black12,
-                                    ),
-                                  ),
+                            child: ElevatedButton.icon(
+                              onPressed: () {},
+                              icon: const Icon(Icons.add, size: 18),
+                              label: const Text("Add First Vehicle"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  side: const BorderSide(color: Colors.black12),
                                 ),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          SizedBox(
-                            width: 180,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: SizedBox(
                             height: 54,
-                            child: Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: () {},
-                                icon: const Icon(Icons.add, size: 18),
-                                label: const Text("Add First Driver"),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    side: const BorderSide(
-                                      color: Colors.black12,
-                                    ),
-                                  ),
+                            child: ElevatedButton.icon(
+                              onPressed: () {},
+                              icon: const Icon(Icons.add, size: 18),
+                              label: const Text("Add First Driver"),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                  side: const BorderSide(color: Colors.black12),
                                 ),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
 
-                      //   What you get section
-                    ],
-                  ),
+                    //   What you get section
+                  ],
                 ),
               ],
             ),
@@ -310,6 +302,36 @@ class HomeWidgets {
               ),
             ),
           ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SizedBox(
+              height: 171,
+              width: 185,
+              child: Image.asset('assets/Card_2.png'),
+            ),
+            SizedBox(
+              height: 171,
+              width: 185,
+              child: Image.asset('assets/Card_Image_one.png'),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SizedBox(
+              height: 171,
+              width: 185,
+              child: Image.asset('assets/Card_4.png'),
+            ),
+            SizedBox(
+              height: 171,
+              width: 185,
+              child: Image.asset('assets/Card_3.png'),
+            ),
+          ],
         ),
       ],
     );

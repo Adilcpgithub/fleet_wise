@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignupOtpWidgets {
   //!  Verify number text and otp sent to number
-  Widget buildOtpVerificationHeader() {
+  Widget buildOtpVerificationHeader(String phoneNo) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
@@ -20,7 +20,7 @@ class SignupOtpWidgets {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 Text(
                   'Verify number',
                   style: TextStyle(
@@ -36,7 +36,7 @@ class SignupOtpWidgets {
                     style: TextStyle(color: AppColors.lightGrey, fontSize: 14),
                     children: [
                       TextSpan(
-                        text: '+91 93622 53463',
+                        text: '+91 $phoneNo',
                         style: TextStyle(
                           color: AppColors.grey,
                           fontWeight: FontWeight.bold,
@@ -74,7 +74,7 @@ class SignupOtpWidgets {
         ),
         //! Otp text fields
         Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(8.0),
           child: OtpBoxFields(
             onCompleted: (otp) {
               if (otp.length == 6) {

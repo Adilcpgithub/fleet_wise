@@ -115,7 +115,9 @@ class ProfiltLossWidgets {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildFilterButton("Yesterday", context),
+                        SizedBox(width: 5),
                         _buildFilterButton("Today", context),
+                        SizedBox(width: 5),
                         _buildFilterButton("Monthly", context),
                       ],
                     ),
@@ -140,34 +142,38 @@ class ProfiltLossWidgets {
     return BlocBuilder<FilterBloc, FilterState>(
       builder: (context, filterState) {
         final bool isSelected = filterState.selectedFilter == text;
-        return GestureDetector(
-          onTap: () {
-            context.read<FilterBloc>().add(SelectFilter(text));
-          },
-          child: Container(
-            margin: EdgeInsets.only(right: 10),
-            width: 112,
-            height: 41,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color:
-                  isSelected ? Colors.white : Color.fromARGB(31, 255, 255, 255),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
+        return Expanded(
+          child: GestureDetector(
+            onTap: () {
+              context.read<FilterBloc>().add(SelectFilter(text));
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: 10),
+
+              height: 41,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
                 color:
                     isSelected
-                        ? AppColors.white
-                        : const Color.fromARGB(142, 255, 255, 255),
-                width: 1,
+                        ? Colors.white
+                        : Color.fromARGB(31, 255, 255, 255),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color:
+                      isSelected
+                          ? AppColors.white
+                          : const Color.fromARGB(142, 255, 255, 255),
+                  width: 1,
+                ),
               ),
-            ),
-            child: Center(
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: isSelected ? AppColors.black : Colors.white,
+              child: Center(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: isSelected ? AppColors.black : Colors.white,
+                  ),
                 ),
               ),
             ),

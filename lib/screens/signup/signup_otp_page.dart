@@ -51,7 +51,9 @@ class SignupOtpPage extends StatelessWidget {
                 SizedBox(height: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [signupOtpWidgets.buildOtpVerificationHeader()],
+                  children: [
+                    signupOtpWidgets.buildOtpVerificationHeader(phoneNumber),
+                  ],
                 ),
                 signupOtpWidgets.buildExpandedSpacer(height: 40),
                 signupOtpWidgets.buildOtpfield(

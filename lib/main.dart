@@ -7,6 +7,7 @@ import 'package:fleet_wise/providers/pnl_providers/monthly_pnl_bloc/monthly_pnl_
 import 'package:fleet_wise/providers/pnl_providers/today_pnl_bloc/today_pnl_bloc.dart';
 import 'package:fleet_wise/providers/pnl_providers/yesterday_pnl_bloc/yesterday_pnl_bloc.dart';
 import 'package:fleet_wise/providers/upload/upload_bloc.dart';
+import 'package:fleet_wise/screens/signup/signup_otp_page.dart';
 import 'package:fleet_wise/screens/splash/splash_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -68,7 +69,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           ),
-          home: SplashPage(),
+          home: SignupOtpPage(phoneNumber: '', requestId: ''),
         ),
       ),
     );

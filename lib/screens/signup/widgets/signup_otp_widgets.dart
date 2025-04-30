@@ -68,23 +68,26 @@ class SignupOtpWidgets {
         Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.only(left: 10, bottom: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
             child: customRichText('Enter OTP'),
           ),
         ),
         //! Otp text fields
-        OtpBoxFields(
-          onCompleted: (otp) {
-            if (otp.length == 6) {
-              context.read<AuthBloc>().add(
-                VerifyOtpEvent(
-                  otp: otp,
-                  phoneNumber: phoneNumber,
-                  requestId: requestId,
-                ),
-              );
-            }
-          },
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: OtpBoxFields(
+            onCompleted: (otp) {
+              if (otp.length == 6) {
+                context.read<AuthBloc>().add(
+                  VerifyOtpEvent(
+                    otp: otp,
+                    phoneNumber: phoneNumber,
+                    requestId: requestId,
+                  ),
+                );
+              }
+            },
+          ),
         ),
         Align(
           alignment: Alignment.centerRight,

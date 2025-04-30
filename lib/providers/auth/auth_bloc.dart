@@ -96,7 +96,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final accessToken = await storageService.getAccessToken();
     final refreshToken = await storageService.getRefreshToken();
-
+    log(accessToken ?? 'not acce');
+    log(refreshToken ?? 'no refresh token');
     if (accessToken != null && refreshToken != null) {
       // ✅ First, try using the existing access token (avoid unnecessary refresh)
       final isTokenValid = await authService.verifyAccessToken(accessToken);
@@ -118,7 +119,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthAutoLoginSuccess());
       } else {
         log('Refresh token failed');
-        await storageService.clearTokens(); // 🔥 Remove expired tokens
+        await storageService.clearTokens();
         emit(AuthAutoLoginFailed());
       }
     } else {

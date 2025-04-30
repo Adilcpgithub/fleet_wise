@@ -75,12 +75,14 @@ class AuthService {
   //! Access Token via refresh token
   Future<String?> refreshAccessToken(String refreshToken) async {
     try {
+      log('refresh function calling ');
       final response = await http.get(
         Uri.parse('$rootUrl/refreshAccessToken'),
         headers: {'refresh_token': refreshToken},
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        log(' tocken refreshe success');
         return json.decode(response.body)['access_token'];
       } else {
         log('refresh token failed1 ${response.statusCode}');
